@@ -4,7 +4,6 @@
     "ms-dotnettools.csharp",
     "aaron-bond.better-comments",
     "pixl.unity-toolbox",
-    "dotjoshjohnson.xml",
-    "eamodio.gitlens"
+    "dotjoshjohnson.xml"
   ]
 }
