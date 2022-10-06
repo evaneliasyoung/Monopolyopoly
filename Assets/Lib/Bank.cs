@@ -110,13 +110,20 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     /// <param name="Owner">The asset holder building on a property.</param>
     /// <param name="Street">The property being built upon.</param>
     /// <returns>True if the building went through, false otherwise.</returns>
-    bool BuildResidences(ref IPropertyOwner Owner, ref IStreet Street, byte Amount = 1)
+    bool BuildResidence(ref IPropertyOwner Owner, ref IStreet Street)
     {
-        if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing < 6 - Amount)
+        if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing < 5)
         {
-            if (TransferFrom(ref Owner, Convert.ToUInt16(Amount * Street.BuildCost)))
+            if (Street.Houses == 4 && Hotels > 0 && TransferFrom(ref Owner, Convert.ToUInt16(Street.BuildCost)))
             {
                 Street.Housing += Amount;
+                Hotels -= 1;
+                return true;
+            }
+            else if (Street.Houses < 4 && Houses > 0 && TransferFrom(ref Owner, Convert.ToUInt16(Street.BuildCost)))
+            {
+                Street.Housing += Amount;
+                Houses -= 1;
                 return true;
             }
         }
@@ -129,12 +136,20 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     /// <param name="Owner">The asset holder demolishing a residence.</param>
     /// <param name="Street">The property being with the residence to be demolished.</param>
     /// <returns>True if the demolishing a residence went through, false otherwise.</returns>
-    bool DemolishResidences(ref IPropertyOwner Owner, ref IStreet Street, byte Amount = 1)
+    bool DemolishResidence(ref IPropertyOwner Owner, ref IStreet Street)
     {
-        if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing >= Amount)
+        if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing >= 1)
         {
             if (TransferTo(ref Owner, Convert.ToUInt16(Amount * Street.BuildCost / 2)))
             {
+                if (Street.Hotels == 1)
+                {
+                    Hotels += 1;
+                }
+                else
+                {
+                    Houses += 1;
+                }
                 Street.Housing -= Amount;
                 return true;
             }
