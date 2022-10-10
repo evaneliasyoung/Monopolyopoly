@@ -6,22 +6,22 @@ using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
-    [Header("Levels to Load")]
-    public string _newGameLevel;
-    private string levelToLoad;
+    [Header("Games to Load")]
+    public string _newGame;
+    private string gameToLoad;
     [SerializeField] private GameObject noSavedGameDialog = null;
 
     public void NewGameDialogYes()
     {
-        SceneManager.LoadScene(_newGameLevel);
+        SceneManager.LoadScene(_newGame);
     }
 
     public void LoadGameDialogYes()
     {
-        if(PlayerPrefs.HasKey("SavedLevel"))
+        if(PlayerPrefs.HasKey("SavedGame"))
         {
-            levelToLoad = PlayerPrefs.GetString("SavedLevel");
-            SceneManager.LoadScene(levelToLoad);
+            gameToLoad = PlayerPrefs.GetString("SavedGame");
+            SceneManager.LoadScene(gameToLoad);
         }
         else
         {
