@@ -10,17 +10,14 @@ public class PieceMovement : MonoBehaviour
 
     public float moveTime = 0.3f;
     public float jumpHeight = 1;
-    public int targetSpace = 0;
-    public int moveSpacesCount = 0;
-    public bool directJump = false;
-    public bool jumpCounter = false;
     public Vector3 offset;
 
-    public bool jailTime = false;
-    public bool noJail = false;
+    private int targetSpace = 0;
+    private int moveSpacesCount = 0;
+    private bool directJump = false;
+    private bool jumpCounter = false;
 
-    //dont modify
-    public int currentSpace = 0;
+    private int currentSpace = 0;
 
     private List<int> ignorePos = new List<int> { 41 };
     private int visitNum = 10;
@@ -38,8 +35,26 @@ public class PieceMovement : MonoBehaviour
     private Vector2 sp2xz;
     private Vector2 moveVector;
     private float parabolaHeight;
+
+    //whether the piece is in the middle of translating
     private bool moving = false;
     private bool inJail = false;
+
+    //piece has reached its destination | useful for other scripts
+    private bool moveComplete = true;
+
+    public int currentPos()
+    {
+        return currentSpace;
+    }
+    public bool getInJail()
+    {
+        return inJail;
+    }
+    public bool isStopped()
+    {
+        return moveComplete;
+    }
 
 
     public void goToJail()
@@ -136,11 +151,6 @@ public class PieceMovement : MonoBehaviour
         //modify input to shrink horizontally and make the vertex when progressNum = 0.5
         float xmodify = 2f * progressNum - 1f;
         float objectHeight = -(multiplier * xmodify * xmodify) + parabolaHeight;
-
-        Debug.Log("progressNum " + progressNum);
-        Debug.Log("multiplier " + multiplier);
-        Debug.Log("xmodify " + xmodify);
-        Debug.Log("objectHeight " + objectHeight);
         //END VERTICAL MOVEMENT
 
         piece.transform.position = new Vector3(xzMovement.x + pos.x, objectHeight, xzMovement.y + pos.z);
@@ -190,19 +200,6 @@ public class PieceMovement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //remove this
-        if (jailTime)
-        {
-            goToJail();
-            jailTime = false;
-        }
-
-        if (noJail)
-        {
-            getOutOfJail();
-            noJail = false;
-        }
-
         //check if piece needs to start moving
         if (!moving)
         {
@@ -211,6 +208,7 @@ public class PieceMovement : MonoBehaviour
             {
                 if (moveSpacesCount != 0)
                 {
+                    moveComplete = false;
                     if (moveSpacesCount > 0)
                         nextSpace = (currentSpace + 1) % spaces;
                     else if (moveSpacesCount < 0)
@@ -224,12 +222,15 @@ public class PieceMovement : MonoBehaviour
 
                     InitializeInterpolation();
                 }
+                else
+                    moveComplete = true;
             }
             //absolute movement
             else
             {
                 if (currentSpace != targetSpace)
                 {
+                    moveComplete = false;
                     //can be -1 for jail
                     if (targetSpace < -1 || targetSpace > spaces - 1)
                         targetSpace = currentSpace;
@@ -249,9 +250,11 @@ public class PieceMovement : MonoBehaviour
                         else
                             nextSpace = (currentSpace + 1) % spaces;
                     }
-                        
+
                     InitializeInterpolation();
                 }
+                else
+                    moveComplete = true;
             }
         }
 
