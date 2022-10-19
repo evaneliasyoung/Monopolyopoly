@@ -82,14 +82,14 @@ public class Bank : MonoBehaviour
         return GetPropertyByIndex(Index).Price;
     }
 
-    public bool CanOwnerPurchaseProperty(IPropertyOwner Owner, IProperty Property)
+    public bool OwnerCanPurchaseProperty(IPropertyOwner Owner, IProperty Property)
     {
         return Property.IsForSale && Owner.LiquidAssets >= Property.Price;
     }
 
-    public bool CanOwnerPurchaseProperty(IPropertyOwner Owner, Byte Index)
+    public bool OwnerCanPurchaseProperty(IPropertyOwner Owner, Byte Index)
     {
-        return CanOwnerPurchaseProperty(Owner, GetPropertyByIndex(Index));
+        return OwnerCanPurchaseProperty(Owner, GetPropertyByIndex(Index));
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public class Bank : MonoBehaviour
     /// <returns>True if the purchase went through, false otherwise.</returns>
     bool PurchaseProperty(ref IPropertyOwner Owner, ref Property Property)
     {
-        if (CanOwnerPurchaseProperty(Owner, Property))
+        if (OwnerCanPurchaseProperty(Owner, Property))
         {
             Owner.LiquidAssets -= Convert.ToInt16(Property.Price);
             Property.Owner = Owner.Index;
