@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
@@ -7,6 +8,86 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     public Byte Housing { get; set; } = 0; // Unused
     public Byte Houses { get; set; } = 32;
     public Byte Hotels { get; set; } = 12;
+    public Dictionary<Byte, Street> Streets { get; } = new Dictionary<byte, Street>();
+    public Dictionary<Byte, Property> Properties { get; } = new Dictionary<byte, Property>();
+
+    private void Start()
+    {
+        // Streets
+        Streets.Add(1, new Street(1, 60));
+        Streets.Add(3, new Street(3, 60));
+        Streets.Add(6, new Street(6, 100));
+        Streets.Add(8, new Street(8, 100));
+        Streets.Add(9, new Street(9, 120));
+        Streets.Add(11, new Street(11, 140));
+        Streets.Add(13, new Street(13, 140));
+        Streets.Add(14, new Street(14, 160));
+        Streets.Add(16, new Street(16, 180));
+        Streets.Add(18, new Street(18, 180));
+        Streets.Add(19, new Street(19, 200));
+        Streets.Add(21, new Street(21, 220));
+        Streets.Add(23, new Street(23, 220));
+        Streets.Add(24, new Street(24, 240));
+        Streets.Add(26, new Street(26, 260));
+        Streets.Add(27, new Street(27, 260));
+        Streets.Add(29, new Street(29, 280));
+        Streets.Add(31, new Street(31, 300));
+        Streets.Add(32, new Street(32, 300));
+        Streets.Add(34, new Street(34, 320));
+        Streets.Add(37, new Street(37, 350));
+        Streets.Add(39, new Street(39, 400));
+
+        // Railroads
+        Properties.Add(5, new Property(5, 200));
+        Properties.Add(15, new Property(15, 200));
+        Properties.Add(25, new Property(25, 200));
+        Properties.Add(35, new Property(35, 200));
+
+        // Utilities
+        Properties.Add(12, new Property(12, 150));
+        Properties.Add(28, new Property(28, 150));
+    }
+
+    public ref Street GetStreetByIndex(Byte Index)
+    {
+        return Streets[Index];
+    }
+
+    public ref Property GetRailOrUtilityByIndex(Byte Index)
+    {
+        return Properties[Index];
+    }
+
+    public ref Property GetPropertyByIndex(Byte Index)
+    {
+        if (Streets.ContainsKey(Index))
+        {
+            return GetStreetByIndex(Index);
+        }
+        else if (Properties.ContainsKey(Index))
+        {
+            return GetRailOrUtilityByIndex(Index);
+        }
+        else
+        {
+            throw new IndexOutOfRangeException("Index must be in [0, 39]");
+        }
+    }
+
+    public Byte? GetPropertyOwnerByIndex(Byte Index)
+    {
+        return GetPropertyByIndex(Index).Owner;
+    }
+
+    public Byte GetPropertyCostByIndex(Byte Index)
+    {
+        return GetPropertyByIndex(Index).Price;
+    }
+
+    public bool OwnerCanPurchaseProperty(IPropertyOwner Owner, IProperty Property)
+    {
+        return Property.IsForSale && Owner.LiquidAssets >= Property.Price;
+    }
 
     /// <summary>
     /// Attempts to make a transfer from the bank to an asset holder.
