@@ -2,10 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class MoveSys : MonoBehaviour
+public class GameControllerSys : MonoBehaviour
 {
     public GameObject moveSys;
-    public List<PieceMovement> pieces;
+    public List<PlayerObj> pieces;
     private int currentPlayer = 0;
 
     public void Roll()
@@ -21,7 +21,7 @@ public class MoveSys : MonoBehaviour
     void Start()
     {
         moveSys = this.gameObject;
-        pieces = new List<PieceMovement>(moveSys.GetComponentsInChildren<PieceMovement>());
+        pieces = new List<PlayerObj>(moveSys.GetComponentsInChildren<PlayerObj>());
     }
 
     // Update is called once per frame
