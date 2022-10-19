@@ -10,12 +10,18 @@ public class GameControllerSys : MonoBehaviour
     public Vector3 offset;
     private int currentPlayer = 0;
 
+
     public void Roll()
     {
         if (pieces[currentPlayer].isStopped() == true)
         {
+            int die1 = (int)(Random.value * 6f) + 1;
+            int die2 = (int)(Random.value * 6f) + 1;
+            //Debug.Log("die1: " + die1 + " - die2: " + die2);
+
+
             currentPlayer = (currentPlayer + 1) % pieces.Count;
-            pieces[currentPlayer].moveSpaces(40);
+            pieces[currentPlayer].moveSpaces(die1 + die2);
         }
     }
 
@@ -29,6 +35,7 @@ public class GameControllerSys : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
         Vector3 piecePos = pieces[currentPlayer].transform.position;
         Vector3 pieceXZ = new Vector3(piecePos.x, 0, piecePos.z);
         mainCamera.transform.position = pieceXZ + offset;
