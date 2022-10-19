@@ -2,10 +2,8 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
+public class Bank : MonoBehaviour
 {
-    public Int16 LiquidAssets { get; set; } = 20580;
-    public Byte Housing { get; set; } = 0; // Unused
     public Byte Houses { get; set; } = 32;
     public Byte Hotels { get; set; } = 12;
     public Dictionary<Byte, Street> Streets { get; } = new Dictionary<byte, Street>();
@@ -90,42 +88,6 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     }
 
     /// <summary>
-    /// Attempts to make a transfer from the bank to an asset holder.
-    /// </summary>
-    /// <param name="Owner">The asset holder receiving funds.</param>
-    /// <param name="Amount">The amount of funds to transfer.</param>
-    /// <returns>True if the transfer succeeded, false otherwise.</returns>
-    bool TransferTo(ref IPropertyOwner Owner, UInt16 Amount)
-    {
-        if (LiquidAssets >= Amount)
-        {
-            Int16 ModAmount = System.Convert.ToInt16(Amount);
-            LiquidAssets -= ModAmount;
-            Owner.LiquidAssets += ModAmount;
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
-    /// Attempts to make a transfer from an asset holder to the bank.
-    /// </summary>
-    /// <param name="Owner">The asset holder sending funds.</param>
-    /// <param name="Amount">The amount of funds to transfer.</param>
-    /// <returns>True if the transfer succeeded, false otherwise.</returns>
-    bool TransferFrom(ref IPropertyOwner Owner, UInt16 Amount)
-    {
-        if (Owner.LiquidAssets >= Amount)
-        {
-            Int16 ModAmount = System.Convert.ToInt16(Amount);
-            LiquidAssets += ModAmount;
-            Owner.LiquidAssets -= ModAmount;
-            return true;
-        }
-        return false;
-    }
-
-    /// <summary>
     /// Processes an asset holder pruchasing a property.
     /// </summary>
     /// <param name="Owner">The asset holder purchasing a property.</param>
@@ -154,11 +116,9 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
         {
             if (Property.PropertyType != PropertyTileType.Street || (Property.PropertyType == PropertyTileType.Street && ((IStreet)Property).Housing == 0))
             {
-                if (TransferTo(ref Owner, Property.MortgageValue))
-                {
-                    Property.IsMortgaged = true;
-                    return true;
-                }
+                Owner.LiquidAssets += Property.MortgageValue;
+                Property.IsMortgaged = true;
+                return true;
             }
         }
         return false;
@@ -220,19 +180,17 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     {
         if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing >= 1)
         {
-            if (TransferTo(ref Owner, Convert.ToUInt16(Amount * Street.BuildCost / 2)))
+            Owner.LiquidAssets += Convert.ToUInt16(Street.BuildCost / 2);
+            if (Street.Hotels == 1)
             {
-                if (Street.Hotels == 1)
-                {
-                    Hotels += 1;
-                }
-                else
-                {
-                    Houses += 1;
-                }
-                Street.Housing -= Amount;
-                return true;
+                Hotels += 1;
             }
+            else
+            {
+                Houses += 1;
+            }
+            Street.Housing -= Amount;
+            return true;
         }
         return false;
     }
