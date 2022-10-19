@@ -82,9 +82,14 @@ public class Bank : MonoBehaviour
         return GetPropertyByIndex(Index).Price;
     }
 
-    public bool OwnerCanPurchaseProperty(IPropertyOwner Owner, IProperty Property)
+    public bool CanOwnerPurchaseProperty(IPropertyOwner Owner, IProperty Property)
     {
         return Property.IsForSale && Owner.LiquidAssets >= Property.Price;
+    }
+
+    public bool CanOwnerPurchaseProperty(IPropertyOwner Owner, Byte Index)
+    {
+        return CanOwnerPurchaseProperty(Owner, GetPropertyByIndex(Index));
     }
 
     /// <summary>
@@ -93,15 +98,21 @@ public class Bank : MonoBehaviour
     /// <param name="Owner">The asset holder purchasing a property.</param>
     /// <param name="Property">The property being purchased.</param>
     /// <returns>True if the purchase went through, false otherwise.</returns>
-    bool PurchaseProperty(ref IPropertyOwner Owner, ref IProperty Property)
+    bool PurchaseProperty(ref IPropertyOwner Owner, ref Property Property)
     {
-        if (OwnerCanPurchaseProperty(Owner, Property))
+        if (CanOwnerPurchaseProperty(Owner, Property))
         {
             Owner.LiquidAssets -= Convert.ToInt16(Property.Price);
             Property.Owner = Owner.Index;
             return true;
         }
         return false;
+    }
+
+    public bool PurchaseProperty(ref IPropertyOwner Owner, Byte Index)
+    {
+        var Property = Streets.ContainsKey(Index) ? Streets[Index] : Properties[Index];
+        return PurchaseProperty(ref Owner, ref Property);
     }
 
     /// <summary>
@@ -124,6 +135,12 @@ public class Bank : MonoBehaviour
         return false;
     }
 
+    public bool MortgageProperty(ref IPropertyOwner Owner, Byte Index)
+    {
+        var Property = Streets.ContainsKey(Index) ? Streets[Index] : Properties[Index];
+        return MortgageProperty(ref Owner, ref Property);
+    }
+
     /// <summary>
     /// Processes an asset holder mortgaging a property.
     /// </summary>
@@ -139,6 +156,12 @@ public class Bank : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public bool UnmortgageProperty(ref IPropertyOwner Owner, Byte Index)
+    {
+        var Property = Streets.ContainsKey(Index) ? Streets[Index] : Properties[Index];
+        return UnmortgageProperty(ref Owner, ref Property);
     }
 
     /// <summary>
@@ -170,6 +193,12 @@ public class Bank : MonoBehaviour
         return false;
     }
 
+    public bool BuildResidence(ref IPropertyOwner Owner, Byte Index)
+    {
+        var Property = Streets.ContainsKey(Index) ? Streets[Index] : Properties[Index];
+        return BuildResidence(ref Owner, ref Property);
+    }
+
     /// <summary>
     /// Processes an asset holder demolishing a residence.
     /// </summary>
@@ -193,5 +222,11 @@ public class Bank : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    public bool DemolishResidence(ref IPropertyOwner Owner, Byte Index)
+    {
+        var Property = Streets.ContainsKey(Index) ? Streets[Index] : Properties[Index];
+        return DemolishResidence(ref Owner, ref Property);
     }
 }
