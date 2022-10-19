@@ -1,10 +1,9 @@
 using System;
-using UnityEngine;
 
 /// <summary>
 /// Represents a space on the game board, can be derived into subclasses.
 /// </summary>
-public class TileSpace : MonoBehaviour, ITileSpace
+public class TileSpace : ITileSpace
 {
     public Byte Index { get; }
 
@@ -25,4 +24,13 @@ public class TileSpace : MonoBehaviour, ITileSpace
                 ? PropertyTileType.Utility
                 : PropertyTileType.Street
         : null;
+
+    /// <summary>
+    /// Constructs a new TileSpace object.
+    /// </summary>
+    /// <param name="index">The position on the board, GO is 0.</param>
+    public TileSpace(byte index)
+    {
+        Index = index;
+    }
 }

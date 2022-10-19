@@ -10,4 +10,11 @@ public class Street : Property, IStreet
     public Byte Housing { get; set; } = 0;
     public Byte Houses => Convert.ToByte(Housing % 5);
     public Byte Hotels => Convert.ToByte(Housing == 5);
+
+    /// <summary>
+    /// Constructs a new Street object.
+    /// </summary>
+    /// <param name="index">The position on the board, GO is 0.</param>
+    /// <param name="price">The purchase price of the Street.</param>
+    public Street(byte index, UInt16 price) : base(index, price) { }
 }
