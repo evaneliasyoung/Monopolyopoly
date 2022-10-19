@@ -123,14 +123,11 @@ public class Bank : MonoBehaviour
     /// <returns>True if the mortgage went through, false otherwise.</returns>
     bool MortgageProperty(ref IPropertyOwner Owner, ref IProperty Property)
     {
-        if (Property.Owner == Owner.Index && !Property.IsMortgaged)
+        if (Property.Owner == Owner.Index && !Property.IsMortgaged && (Property.PropertyType != PropertyTileType.Street || (Property.PropertyType == PropertyTileType.Street && ((IStreet)Property).Housing == 0)))
         {
-            if (Property.PropertyType != PropertyTileType.Street || (Property.PropertyType == PropertyTileType.Street && ((IStreet)Property).Housing == 0))
-            {
-                Owner.LiquidAssets += Property.MortgageValue;
-                Property.IsMortgaged = true;
-                return true;
-            }
+            Owner.LiquidAssets += Property.MortgageValue;
+            Property.IsMortgaged = true;
+            return true;
         }
         return false;
     }
@@ -176,18 +173,18 @@ public class Bank : MonoBehaviour
         {
             if (Street.Houses == 4 && Hotels > 0)
             {
-                Hotels -= 1;
+                Hotels--;
             }
             else if (Street.Houses < 4 && Houses > 0)
             {
-                Houses -= 1;
+                Houses--;
             }
             else
             {
                 return false;
             }
             Owner.LiquidAssets -= Street.BuildCost;
-            Street.Housing += 1;
+            ++Street.Housing;
             return true;
         }
         return false;
@@ -212,13 +209,13 @@ public class Bank : MonoBehaviour
             Owner.LiquidAssets += Convert.ToInt16(Street.BuildCost / 2);
             if (Street.Hotels == 1)
             {
-                Hotels += 1;
+                ++Hotels;
             }
             else
             {
-                Houses += 1;
+                ++Houses;
             }
-            Street.Housing -= 1;
+            --Street.Housing;
             return true;
         }
         return false;
