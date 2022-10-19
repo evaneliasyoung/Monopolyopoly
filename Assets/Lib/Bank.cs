@@ -121,7 +121,7 @@ public class Bank : MonoBehaviour
     /// <param name="Owner">The asset holder mortgaging a property.</param>
     /// <param name="Property">The property being mortgaged.</param>
     /// <returns>True if the mortgage went through, false otherwise.</returns>
-    bool MortgageProperty(ref IPropertyOwner Owner, ref IProperty Property)
+    bool MortgageProperty(ref IPropertyOwner Owner, ref Property Property)
     {
         if (Property.Owner == Owner.Index && !Property.IsMortgaged && (Property.PropertyType != PropertyTileType.Street || (Property.PropertyType == PropertyTileType.Street && ((IStreet)Property).Housing == 0)))
         {
@@ -144,7 +144,7 @@ public class Bank : MonoBehaviour
     /// <param name="Owner">The asset holder mortgaging a property.</param>
     /// <param name="Property">The property being mortgaged.</param>
     /// <returns>True if the mortgage went through, false otherwise.</returns>
-    bool UnmortgageProperty(ref IPropertyOwner Owner, ref IProperty Property)
+    bool UnmortgageProperty(ref IPropertyOwner Owner, ref Property Property)
     {
         if (Property.Owner == Owner.Index && Property.IsMortgaged && Owner.LiquidAssets >= Property.UnmortgageCost)
         {
@@ -167,7 +167,7 @@ public class Bank : MonoBehaviour
     /// <param name="Owner">The asset holder building on a property.</param>
     /// <param name="Street">The property being built upon.</param>
     /// <returns>True if the building went through, false otherwise.</returns>
-    bool BuildResidence(ref IPropertyOwner Owner, ref IStreet Street)
+    bool BuildResidence(ref IPropertyOwner Owner, ref Street Street)
     {
         if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing < 5 && Owner.LiquidAssets >= Street.BuildCost)
         {
@@ -192,8 +192,8 @@ public class Bank : MonoBehaviour
 
     public bool BuildResidence(ref IPropertyOwner Owner, Byte Index)
     {
-        var Property = Streets.ContainsKey(Index) ? Streets[Index] : Properties[Index];
-        return BuildResidence(ref Owner, ref Property);
+        var Street = Streets[Index];
+        return BuildResidence(ref Owner, ref Street);
     }
 
     /// <summary>
@@ -202,7 +202,7 @@ public class Bank : MonoBehaviour
     /// <param name="Owner">The asset holder demolishing a residence.</param>
     /// <param name="Street">The property being with the residence to be demolished.</param>
     /// <returns>True if the demolishing a residence went through, false otherwise.</returns>
-    bool DemolishResidence(ref IPropertyOwner Owner, ref IStreet Street)
+    bool DemolishResidence(ref IPropertyOwner Owner, ref Street Street)
     {
         if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing >= 1)
         {
@@ -223,7 +223,7 @@ public class Bank : MonoBehaviour
 
     public bool DemolishResidence(ref IPropertyOwner Owner, Byte Index)
     {
-        var Property = Streets.ContainsKey(Index) ? Streets[Index] : Properties[Index];
-        return DemolishResidence(ref Owner, ref Property);
+        var Street = Streets[Index];
+        return DemolishResidence(ref Owner, ref Street);
     }
 }
