@@ -133,13 +133,11 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     /// <returns>True if the purchase went through, false otherwise.</returns>
     bool PurchaseProperty(ref IPropertyOwner Owner, ref IProperty Property)
     {
-        if (Property.IsForSale && Owner.LiquidAssets >= Property.Price)
+        if (OwnerCanPurchaseProperty(Owner, Property))
         {
-            if (TransferFrom(ref Owner, Property.Price))
-            {
-                Property.Owner = Owner.Index;
-                return true;
-            }
+            Owner.LiquidAssets -= Property.Price;
+            Property.Owner = Owner.Index;
+            return true;
         }
         return false;
     }
@@ -174,13 +172,11 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     /// <returns>True if the mortgage went through, false otherwise.</returns>
     bool UnmortgageProperty(ref IPropertyOwner Owner, ref IProperty Property)
     {
-        if (Property.Owner == Owner.Index && Property.IsMortgaged)
+        if (Property.Owner == Owner.Index && Property.IsMortgaged && Owner.LiquidAssets >= Property.UnmortgageCost)
         {
-            if (TransferFrom(ref Owner, Property.UnmortgageCost))
-            {
-                Property.IsMortgaged = false;
-                return true;
-            }
+            Owner.LiquidAssets -= Property.UnmortgageCost;
+            Property.IsMortgaged = false;
+            return true;
         }
         return false;
     }
@@ -193,20 +189,23 @@ public class Bank : MonoBehaviour, ILiquidityProvider, IHousingProvider
     /// <returns>True if the building went through, false otherwise.</returns>
     bool BuildResidence(ref IPropertyOwner Owner, ref IStreet Street)
     {
-        if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing < 5)
+        if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing < 5 && Owner.LiquidAssets >= Street.BuildCost)
         {
-            if (Street.Houses == 4 && Hotels > 0 && TransferFrom(ref Owner, Convert.ToUInt16(Street.BuildCost)))
+            if (Street.Houses == 4 && Hotels > 0)
             {
-                Street.Housing += Amount;
                 Hotels -= 1;
-                return true;
             }
-            else if (Street.Houses < 4 && Houses > 0 && TransferFrom(ref Owner, Convert.ToUInt16(Street.BuildCost)))
+            else if (Street.Houses < 4 && Houses > 0)
             {
-                Street.Housing += Amount;
                 Houses -= 1;
-                return true;
             }
+            else
+            {
+                return false;
+            }
+            Owner.LiquidAssets -= Street.BuildCost;
+            Street.Housing += Amount;
+            return true;
         }
         return false;
     }
