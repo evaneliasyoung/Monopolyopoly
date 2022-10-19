@@ -46,21 +46,21 @@ public class Bank : MonoBehaviour
         Properties.Add(28, new Property(28, 150));
     }
 
-    public ref Street GetStreetByIndex(Byte Index)
+    public Street GetStreetByIndex(Byte Index)
     {
         return Streets[Index];
     }
 
-    public ref Property GetRailOrUtilityByIndex(Byte Index)
+    public Property GetRailOrUtilityByIndex(Byte Index)
     {
         return Properties[Index];
     }
 
-    public ref Property GetPropertyByIndex(Byte Index)
+    public Property GetPropertyByIndex(Byte Index)
     {
         if (Streets.ContainsKey(Index))
         {
-            return GetStreetByIndex(Index);
+            return (Property)(GetStreetByIndex(Index));
         }
         else if (Properties.ContainsKey(Index))
         {
@@ -77,7 +77,7 @@ public class Bank : MonoBehaviour
         return GetPropertyByIndex(Index).Owner;
     }
 
-    public Byte GetPropertyCostByIndex(Byte Index)
+    public UInt16 GetPropertyCostByIndex(Byte Index)
     {
         return GetPropertyByIndex(Index).Price;
     }
@@ -97,7 +97,7 @@ public class Bank : MonoBehaviour
     {
         if (OwnerCanPurchaseProperty(Owner, Property))
         {
-            Owner.LiquidAssets -= Property.Price;
+            Owner.LiquidAssets -= Convert.ToInt16(Property.Price);
             Property.Owner = Owner.Index;
             return true;
         }
@@ -164,7 +164,7 @@ public class Bank : MonoBehaviour
                 return false;
             }
             Owner.LiquidAssets -= Street.BuildCost;
-            Street.Housing += Amount;
+            Street.Housing += 1;
             return true;
         }
         return false;
@@ -180,7 +180,7 @@ public class Bank : MonoBehaviour
     {
         if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing >= 1)
         {
-            Owner.LiquidAssets += Convert.ToUInt16(Street.BuildCost / 2);
+            Owner.LiquidAssets += Convert.ToInt16(Street.BuildCost / 2);
             if (Street.Hotels == 1)
             {
                 Hotels += 1;
@@ -189,7 +189,7 @@ public class Bank : MonoBehaviour
             {
                 Houses += 1;
             }
-            Street.Housing -= Amount;
+            Street.Housing -= 1;
             return true;
         }
         return false;
