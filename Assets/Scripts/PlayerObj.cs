@@ -8,10 +8,6 @@ public class PlayerObj : MonoBehaviour
     public GameObject piece;
     private List<Transform> positions;
 
-    public float moveTime = 0.3f;
-    public float jumpHeight = 1;
-    public Vector3 offset;
-
     private int targetSpace = 0;
     private int moveSpacesCount = 0;
     private bool directJump = false;
@@ -39,14 +35,18 @@ public class PlayerObj : MonoBehaviour
     private bool moving = false;
     private bool inJail = false;
 
-    //piece has reached its destination | useful for other scripts
     private bool moveComplete = true;
 
     //Public variables to be modified and accessed
     public int playerMoney = 500;
     public int jailFreeCards = 0;
 
-    //Returns current position
+    //Public movement logic variables
+    public float moveTime = 0.3f;
+    public float jumpHeight = 1;
+    public Vector3 offset;
+
+    //Returns current space number
     public int currentPos()
     {
         return currentSpace;
