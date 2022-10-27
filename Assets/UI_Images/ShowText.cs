@@ -13,12 +13,6 @@ public class ShowText : MonoBehaviour
 	public GameObject target;
 	public string variableName;
 	public TMPro.TextMeshProUGUI myText;
-	// public string test;
-
-	// void Update()
-	// {
-	// 	myText.text = test;
-	// }
 
 	/** Don't refresh at 60FPS; wasteful! */
 	private float updateNSeconds = 0.25f;
