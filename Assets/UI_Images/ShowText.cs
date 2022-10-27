@@ -61,6 +61,7 @@ public class ShowText : MonoBehaviour
 						}
 					}
 				}
+
 				if(textAllignment == "Center"){
 					myText.alignment = TextAlignmentOptions.Center; 
 				}

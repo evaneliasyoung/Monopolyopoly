@@ -25,6 +25,11 @@ public class GameControllerSys : MonoBehaviour
         }
     }
 
+    public int activeTurn()
+    {
+        return currentPlayer;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
