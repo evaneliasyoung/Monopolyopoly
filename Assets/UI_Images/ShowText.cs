@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using System.Reflection;
+using TMPro;
 
 /**
 License: do whatever you want.
@@ -13,6 +14,9 @@ public class ShowText : MonoBehaviour
 	public GameObject target;
 	public string variableName;
 	public TMPro.TextMeshProUGUI myText;
+	public int textSize = 36;
+	public string preText = "";
+	public string textAllignment = "Center";
 
 	/** Don't refresh at 60FPS; wasteful! */
 	private float updateNSeconds = 0.25f;
@@ -57,7 +61,18 @@ public class ShowText : MonoBehaviour
 						}
 					}
 				}
-				myText.text = "$" + valueAsString;
+				if(textAllignment == "Center"){
+					myText.alignment = TextAlignmentOptions.Center; 
+				}
+				if(textAllignment == "Right"){
+					myText.alignment = TextAlignmentOptions.Right; 
+				}
+				if(textAllignment == "Left"){
+					myText.alignment = TextAlignmentOptions.Left; 
+				}
+				
+				myText.fontSize = textSize;
+				myText.text = preText + valueAsString;
 			}
 		}
 	}

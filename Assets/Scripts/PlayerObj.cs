@@ -7,6 +7,7 @@ public class PlayerObj : MonoBehaviour
     public GameObject transforms;
     public GameObject piece;
     private List<Transform> positions;
+    public string name;
 
     private int targetSpace = 0;
     private int moveSpacesCount = 0;
