@@ -296,7 +296,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transforms: {fileID: 1824611483}
   piece: {fileID: 17768053}
-  name: Money Bag
+  playerName: Money Bag
   playerMoney: 500
   jailFreeCards: 0
   moveTime: 0.3
@@ -629,7 +629,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 17768053}
-  variableName: name
+  variableName: playerName
   myText: {fileID: 147375613}
   textSize: 28
   preText: 
@@ -1149,7 +1149,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1225926828}
-  variableName: name
+  variableName: playerName
   myText: {fileID: 522861311}
   textSize: 28
   preText: 
@@ -1937,7 +1937,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transforms: {fileID: 1824611483}
   piece: {fileID: 1211599560}
-  name: Crowbar
+  playerName: Crowbar
   playerMoney: 500
   jailFreeCards: 0
   moveTime: 0.3
@@ -1967,7 +1967,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transforms: {fileID: 1824611483}
   piece: {fileID: 1225926828}
-  name: Bowtie
+  playerName: Bowtie
   playerMoney: 500
   jailFreeCards: 0
   moveTime: 0.3
@@ -2420,7 +2420,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 2023055495}
-  variableName: name
+  variableName: playerName
   myText: {fileID: 1860096629}
   textSize: 28
   preText: 
@@ -2651,7 +2651,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   target: {fileID: 1211599560}
-  variableName: name
+  variableName: playerName
   myText: {fileID: 1903390825}
   textSize: 28
   preText: 
@@ -3028,7 +3028,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   transforms: {fileID: 1824611483}
   piece: {fileID: 2023055495}
-  name: Tommy Gun
+  playerName: Tommy Gun
   playerMoney: 500
   jailFreeCards: 0
   moveTime: 0.3
