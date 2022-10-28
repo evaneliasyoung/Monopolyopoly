@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class PlayerObj : MonoBehaviour
 {
+    public GameControllerSys gameController;
     public GameObject transforms;
     public GameObject piece;
     private List<Transform> positions;
@@ -38,6 +39,7 @@ public class PlayerObj : MonoBehaviour
     private bool moveComplete = true;
 
     //Public variables to be modified and accessed
+    public int playerNumber;
     public int playerMoney = 500;
     public int jailFreeCards = 0;
 
@@ -192,6 +194,8 @@ public class PlayerObj : MonoBehaviour
     //Start is called at the first frame
     void Start()
     {
+        piece = this.gameObject;
+        gameController = piece.GetComponentInParent<GameControllerSys>();
         positions = new List<Transform>(transforms.GetComponentsInChildren<Transform>());
         //remove parent
         positions.RemoveAt(0);
@@ -209,11 +213,6 @@ public class PlayerObj : MonoBehaviour
 
         spaces = positions.Count;
 
-        foreach (Transform i in positions)
-        {
-            Debug.Log(i.position);
-        }
-
         piece.transform.position = positions[0].position + offset;
     }
 
@@ -224,63 +223,71 @@ public class PlayerObj : MonoBehaviour
         if (!moving)
         {
             //relative movement
-            if (jumpCounter)
+            if (jumpCounter && moveSpacesCount != 0)
             {
-                if (moveSpacesCount != 0)
-                {
-                    moveComplete = false;
-                    if (moveSpacesCount > 0)
-                        nextSpace = (currentSpace + 1) % spaces;
-                    else if (moveSpacesCount < 0)
-                        nextSpace = mod((currentSpace - 1), spaces);
+                moveComplete = false;
+                if (moveSpacesCount > 0)
+                    nextSpace = (currentSpace + 1) % spaces;
+                else if (moveSpacesCount < 0)
+                    nextSpace = mod((currentSpace - 1), spaces);
 
+                if (inJail)
+                {
+                    nextSpace = visitNum;
+                    inJail = false;
+                }
+
+                InitializeInterpolation();
+                    
+            }
+            //absolute movement
+            else if (!jumpCounter && currentSpace != targetSpace)
+            {
+                moveComplete = false;
+                //can be -1 for jail
+                if (targetSpace < -1 || targetSpace > spaces - 1)
+                    targetSpace = currentSpace;
+
+                if (directJump)
+                {
+                    nextSpace = targetSpace;
+                    inJail = false;
+                }
+                else
+                {
                     if (inJail)
                     {
                         nextSpace = visitNum;
                         inJail = false;
                     }
-
-                    InitializeInterpolation();
-                }
-                else
-                    moveComplete = true;
-            }
-            //absolute movement
-            else
-            {
-                if (currentSpace != targetSpace)
-                {
-                    moveComplete = false;
-                    //can be -1 for jail
-                    if (targetSpace < -1 || targetSpace > spaces - 1)
-                        targetSpace = currentSpace;
-
-                    if (directJump)
-                    {
-                        nextSpace = targetSpace;
-                        inJail = false;
-                    }
                     else
-                    {
-                        if (inJail)
-                        {
-                            nextSpace = visitNum;
-                            inJail = false;
-                        }
-                        else
-                            nextSpace = (currentSpace + 1) % spaces;
-                    }
-
-                    InitializeInterpolation();
+                        nextSpace = (currentSpace + 1) % spaces;
                 }
-                else
-                    moveComplete = true;
+
+                InitializeInterpolation();
+                    
             }
         }
 
         if (moving)
         {
             InterpolateMovement();
+
+            //stopped moving right after
+            if (!moving)
+            {
+                if (jumpCounter && moveSpacesCount == 0)
+                {
+                    moveComplete = true;
+                    gameController.Stop();
+                }
+                else if (!jumpCounter && currentSpace == targetSpace)
+                {
+                    moveComplete = true;
+                    gameController.Stop();
+                }
+                
+            }
         }
 
     }
