@@ -28,7 +28,9 @@ public class GameControllerSys : MonoBehaviour
         return currentPlayer;
     }
 
-    //When piece stops moving
+    /// <summary>
+    /// Call when piece is done moving
+    /// </summary>
     public void Stop()
     {
         if(doubles)
