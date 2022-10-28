@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+/// <summary>
+/// Controls piece movement and holds player data
+/// </summary>
 public class PlayerObj : MonoBehaviour
 {
     public GameControllerSys gameController;
@@ -13,8 +16,6 @@ public class PlayerObj : MonoBehaviour
     private int moveSpacesCount = 0;
     private bool directJump = false;
     private bool jumpCounter = false;
-
-    private int currentSpace = 0;
 
     private List<int> ignorePos = new List<int> { 41 };
     private int visitNum = 10;
@@ -34,39 +35,41 @@ public class PlayerObj : MonoBehaviour
 
     //whether the piece is in the middle of translating
     private bool moving = false;
-    private bool inJail = false;
 
+    private int currentSpace = 0;
+    public int CurrentSpace 
+    {
+        get { return currentSpace; }
+    }
+    private bool inJail = false;
+    public bool InJail
+    {
+        get { return inJail; }
+    }
     private bool moveComplete = true;
+    public bool MoveComplete
+    {
+        get { return moveComplete; }
+    }
 
     //Public variables to be modified and accessed
-    public int playerNumber;
-    public int playerMoney = 500;
-    public int jailFreeCards = 0;
+    
+    public int PlayerMoney { get; set; } = 500;
+    public int JailFreeCards { get; set; } = 0;
+    public int TurnsInJail { get; set; } = 0;
 
     //Public movement logic variables
-    public float moveTime = 0.3f;
-    public float jumpHeight = 1;
+    public float MoveTime { get; set; } = 0.3f;
+    public float JumpHeight { get; set; } = 1;
+
+    //defined in unity
+    public int playerNumber;
     public Vector3 offset;
+    public Vector3 visitingOffset;
 
-    //Returns current space number
-    public int currentPos()
-    {
-        return currentSpace;
-    }
-
-    //Returns true if the player is in jail
-    public bool getInJail()
-    {
-        return inJail;
-    }
-
-    //Returns true if the player is not moving
-    public bool isStopped()
-    {
-        return moveComplete;
-    }
-
-    //Sends the player to jail
+    /// <summary>
+    /// Sends piece to jail
+    /// </summary>
     public void goToJail()
     {
         inJail = true;
@@ -81,17 +84,22 @@ public class PlayerObj : MonoBehaviour
         sp1xz = new Vector2(sp1.x, sp1.z);
         sp2xz = new Vector2(sp2.x, sp2.z);
         moveVector = sp2xz - sp1xz;
-        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + jumpHeight;
+        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + JumpHeight;
         moving = true;
     }
 
-    //Takes the player out of jail and on to just visiting
+    /// <summary>
+    /// Send piece to just visiting
+    /// </summary>
     public void getOutOfJail()
     {
         directJumpTo(visitNum);
     }
 
-    //Moves the player directly to "space" in one jump
+    /// <summary>
+    /// Moves the player directly to "space" in one jump
+    /// </summary>
+    /// <param name="space">int of desired space</param>
     public void directJumpTo(int space)
     {
         //space = space - 1;
@@ -103,7 +111,10 @@ public class PlayerObj : MonoBehaviour
         targetSpace = space;
     }
 
-    //Moves the player to "space" and jumps on each space between
+    /// <summary>
+    /// Moves the player to "space" and jumps on each space between
+    /// </summary>
+    /// <param name="space">int of desired space</param>
     public void moveTo(int space)
     {
         //space = space - 1;
@@ -115,7 +126,10 @@ public class PlayerObj : MonoBehaviour
         targetSpace = space;
     }
 
-    //Moves the player a relative amount of spaces
+    /// <summary>
+    /// Moves the player a relative amount of spaces
+    /// </summary>
+    /// <param name="num">int of desired moves</param>
     public void moveSpaces(int num)
     {
         jumpCounter = true;
@@ -134,7 +148,11 @@ public class PlayerObj : MonoBehaviour
         //current space position
         sp1 = piece.transform.position;
         //next space position
-        sp2 = positions[nextSpace].position + offset;
+
+        if (nextSpace == 10)
+            sp2 = positions[nextSpace].position + visitingOffset;
+        else
+            sp2 = positions[nextSpace].position + offset;
 
         //current space x,z position
         sp1xz = new Vector2(sp1.x, sp1.z);
@@ -142,7 +160,7 @@ public class PlayerObj : MonoBehaviour
         sp2xz = new Vector2(sp2.x, sp2.z);
 
         moveVector = sp2xz - sp1xz;
-        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + jumpHeight;
+        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + JumpHeight;
         moving = true;
         return;
     }
@@ -151,7 +169,7 @@ public class PlayerObj : MonoBehaviour
     private void InterpolateMovement()
     {
         Vector3 pos = piece.transform.position;
-        Vector2 xzMovement = moveVector * Time.deltaTime / moveTime;
+        Vector2 xzMovement = moveVector * Time.deltaTime / MoveTime;
 
         //piece.transform.position = new Vector3(xzMovement.x, pos.y, xzMovement.y);
 

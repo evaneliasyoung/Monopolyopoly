@@ -144,11 +144,8 @@ MonoBehaviour:
   transforms: {fileID: 1824611483}
   piece: {fileID: 17768053}
   playerNumber: 0
-  playerMoney: 500
-  jailFreeCards: 0
-  moveTime: 0.3
-  jumpHeight: 1
-  offset: {x: 0.4, y: 0.1, z: 0}
+  offset: {x: 0.3, y: 0.07, z: -0.1}
+  visitingOffset: {x: 0.06, y: 0.07, z: -0.4}
 --- !u!4 &17768057 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6716764430449674876, guid: 61274f8987c44934183d7fc6193d307b, type: 3}
@@ -587,8 +584,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e5f308afa6ebf64cbaedb605b2c8284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bank: {fileID: 0}
   passButton: {fileID: 478772717}
   rollButton: {fileID: 1090223626}
+  buyButton: {fileID: 1048981560}
   gameController: {fileID: 0}
   mainCamera: {fileID: 963194225}
   cameraControl: {fileID: 0}
@@ -1183,7 +1182,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 80, y: 130}
+  m_AnchoredPosition: {x: 80, y: 50}
   m_SizeDelta: {x: 100, y: 60}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1090223628
@@ -1300,12 +1299,9 @@ MonoBehaviour:
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
   piece: {fileID: 1211599560}
-  playerNumber: 1
-  playerMoney: 500
-  jailFreeCards: 0
-  moveTime: 0.3
-  jumpHeight: 1
-  offset: {x: 0, y: 0.38, z: -0.4}
+  playerNumber: 0
+  offset: {x: 0.2, y: 0.35, z: -0.5}
+  visitingOffset: {x: 0, y: 0.35, z: -0.9}
 --- !u!4 &1211599567 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1241495723884610354, guid: 5ebd9e18eeff622438a32621f1a69191, type: 3}
@@ -1331,12 +1327,9 @@ MonoBehaviour:
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
   piece: {fileID: 1225926828}
-  playerNumber: 3
-  playerMoney: 500
-  jailFreeCards: 0
-  moveTime: 0.3
-  jumpHeight: 1
-  offset: {x: -0.4, y: 0, z: -0.2}
+  playerNumber: 0
+  offset: {x: -0.3, y: 0, z: -0.2}
+  visitingOffset: {x: -1, y: 0, z: 0.05}
 --- !u!4 &1225926835 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 915908777890866685, guid: f7a61888696e4314aa074eb4c37c3bdf, type: 3}
@@ -1371,7 +1364,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1840932465299048440, guid: 550736b0dbd3bb1408ab30cbb5cf52c7, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -15.541882
+      value: -15.714
       objectReference: {fileID: 0}
     - target: {fileID: 1840932465299048440, guid: 550736b0dbd3bb1408ab30cbb5cf52c7, type: 3}
       propertyPath: m_LocalPosition.y
@@ -1379,7 +1372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1840932465299048440, guid: 550736b0dbd3bb1408ab30cbb5cf52c7, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 27.688435
+      value: 27.191
       objectReference: {fileID: 0}
     - target: {fileID: 1840932465299048440, guid: 550736b0dbd3bb1408ab30cbb5cf52c7, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1697,11 +1690,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6716764430449674876, guid: 61274f8987c44934183d7fc6193d307b, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 11.372467
+      value: 11.471
       objectReference: {fileID: 0}
     - target: {fileID: 6716764430449674876, guid: 61274f8987c44934183d7fc6193d307b, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 25.84062
+      value: 26.258
       objectReference: {fileID: 0}
     - target: {fileID: 6716764430449674876, guid: 61274f8987c44934183d7fc6193d307b, type: 3}
       propertyPath: m_LocalRotation.w
@@ -1762,12 +1755,9 @@ MonoBehaviour:
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
   piece: {fileID: 2023055495}
-  playerNumber: 2
-  playerMoney: 500
-  jailFreeCards: 0
-  moveTime: 0.3
-  jumpHeight: 1
-  offset: {x: 0, y: 0.12, z: 0.6}
+  playerNumber: 0
+  offset: {x: 0.3, y: 0.13, z: 0.5}
+  visitingOffset: {x: -0.15, y: 0.13, z: 0.3}
 --- !u!1001 &9145857937063633775
 PrefabInstance:
   m_ObjectHideFlags: 0

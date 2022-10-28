@@ -65,13 +65,6 @@ public class CameraController : MonoBehaviour
 
         pieces = new List<PlayerObj>(gameController.GetComponentsInChildren<PlayerObj>());
         pieces.Sort((x, y) => x.playerNumber.CompareTo(y.playerNumber));
-
-        Debug.Log("count: " + pieces.Count);
-
-        foreach (PlayerObj piece in pieces)
-        {
-            Debug.Log(piece.name);
-        }
     }
 
     
@@ -101,7 +94,7 @@ public class CameraController : MonoBehaviour
 
         Vector3 piecePos = pieces[currentPlayer].transform.position;
         Vector3 pieceXZ = new Vector3(piecePos.x, 0, piecePos.z);
-        if (pieces[currentPlayer].currentPos() >= 11 && pieces[currentPlayer].currentPos() <= 30)
+        if (pieces[currentPlayer].CurrentSpace >= 11 && pieces[currentPlayer].CurrentSpace <= 30)
         {
             
             mainCamera.transform.position = pieceXZ + reverseOffset;
