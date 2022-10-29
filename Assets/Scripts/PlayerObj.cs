@@ -5,8 +5,11 @@ using UnityEngine;
 /// <summary>
 /// Controls piece movement and holds player data
 /// </summary>
-public class PlayerObj : MonoBehaviour
+public class PlayerObj : MonoBehaviour, IPropertyOwner
 {
+    public byte IWithindex;
+    public int LiquidAssets;
+
     public GameControllerSys gameController;
     public GameObject transforms;
     public GameObject piece;
@@ -54,7 +57,7 @@ public class PlayerObj : MonoBehaviour
 
     //Public variables to be modified and accessed
     
-    public int PlayerMoney { get; set; } = 500;
+    public short PlayerMoney { get; set; } = 1500;
     public int JailFreeCards { get; set; } = 0;
     public int TurnsInJail { get; set; } = 0;
 
@@ -62,8 +65,11 @@ public class PlayerObj : MonoBehaviour
     public float MoveTime { get; set; } = 0.3f;
     public float JumpHeight { get; set; } = 1;
 
+    byte IWithIndex.Index { get { return playerNumber; } }
+    short ILiquidityProvider.LiquidAssets { get { return PlayerMoney; } set { PlayerMoney = value; } }
+
     //defined in unity
-    public int playerNumber;
+    public byte playerNumber;
     public Vector3 offset;
     public Vector3 visitingOffset;
 
@@ -245,7 +251,14 @@ public class PlayerObj : MonoBehaviour
             {
                 moveComplete = false;
                 if (moveSpacesCount > 0)
+                {
                     nextSpace = (currentSpace + 1) % spaces;
+                    if (nextSpace == 0)
+                    {
+                        PlayerMoney += 200;
+                        gameController.UpdateMoney();
+                    }
+                }
                 else if (moveSpacesCount < 0)
                     nextSpace = mod((currentSpace - 1), spaces);
 

@@ -6,6 +6,7 @@ public class CameraController : MonoBehaviour
 {
 
     public List<PlayerObj> pieces;
+    public PlayerObj piece;
     public Vector3 offset;
     public Vector3 reverseOffset;
     public Vector3 angle;
@@ -46,9 +47,10 @@ public class CameraController : MonoBehaviour
     }
     */
 
-    public void TargetPlayer(int player)
+    public void TargetPlayer(PlayerObj player)
     {
-        currentPlayer = player;
+        //currentPlayer = player;
+        piece = player;
     }
 
     public void SetPlayers(List<PlayerObj> players)
@@ -62,9 +64,10 @@ public class CameraController : MonoBehaviour
         mainCamera = this.gameObject;
         reverseOffset = new Vector3(-offset.x, offset.y, -offset.z);
         reverseAngle = new Vector3(angle.x, angle.y + 180f, angle.z);
-
+        /*
         pieces = new List<PlayerObj>(gameController.GetComponentsInChildren<PlayerObj>());
         pieces.Sort((x, y) => x.playerNumber.CompareTo(y.playerNumber));
+        */
     }
 
     
@@ -92,9 +95,9 @@ public class CameraController : MonoBehaviour
 
         
 
-        Vector3 piecePos = pieces[currentPlayer].transform.position;
+        Vector3 piecePos = piece.transform.position;
         Vector3 pieceXZ = new Vector3(piecePos.x, 0, piecePos.z);
-        if (pieces[currentPlayer].CurrentSpace >= 11 && pieces[currentPlayer].CurrentSpace <= 30)
+        if (piece.CurrentSpace >= 11 && piece.CurrentSpace <= 30)
         {
             
             mainCamera.transform.position = pieceXZ + reverseOffset;
