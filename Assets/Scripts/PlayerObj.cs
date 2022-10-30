@@ -133,6 +133,18 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     }
 
     /// <summary>
+    /// Moves the player directly "num" spaces ahead
+    /// </summary>
+    /// <param name="num">int of desired spaces forward</param>
+    public void directJumpSpaces(int num)
+    {
+        targetSpace = mod(currentSpace + num, spaces);
+
+        jumpCounter = false;
+        directJump = true;
+    }
+
+    /// <summary>
     /// Moves the player a relative amount of spaces
     /// </summary>
     /// <param name="num">int of desired moves</param>

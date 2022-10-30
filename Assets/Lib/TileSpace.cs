@@ -11,9 +11,9 @@ public class TileSpace : ITileSpace
         ? TileType.Corner
         : Index == 4 || Index == 38
         ? TileType.Tax
-        : Index == 7 || Index == 22
+        : Index == 7 || Index == 22 || Index == 36
         ? TileType.Chance
-        : Index == 2 || Index == 17
+        : Index == 2 || Index == 17 || Index == 33
         ? TileType.CommunityChest
         : TileType.Property;
 

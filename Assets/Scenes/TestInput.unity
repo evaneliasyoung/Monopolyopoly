@@ -587,6 +587,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e5f308afa6ebf64cbaedb605b2c8284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  moveTime: 0.2
+  instantMoves: 1
   bank: {fileID: 0}
   passButton: {fileID: 478772717}
   rollButton: {fileID: 1090223626}
@@ -598,6 +600,7 @@ MonoBehaviour:
   pieces: []
   offset: {x: -3, y: 3, z: 3}
   reverseOffset: {x: 0, y: 0, z: 0}
+  jailCost: 50
 --- !u!4 &632658605
 Transform:
   m_ObjectHideFlags: 0
