@@ -10,6 +10,10 @@ public class CardBehaviour : MonoBehaviour
     public List<GameObject> unorderedChanceCards;
     // Used to show the card to the player
     public Transform playerCameraTrans;
+    // most recent cards drawn
+    public GameObject mostRecentCardDrawn;
+    public string mostRecentCardDrawnName;
+    
       
     
     // --------------- Private Vars -----------------------------------------------------------------------------------
@@ -26,6 +30,8 @@ public class CardBehaviour : MonoBehaviour
     {
         Shuffle("community");
         Shuffle("chance");
+        
+        DrawAndShowCard("community");
     }
 
     
@@ -33,7 +39,7 @@ public class CardBehaviour : MonoBehaviour
     // Draw a card from specified deck, show to camera, then set aside
     //      (if get out of jail card, use icon for UI)
     // TODO : Need to implement UI "OK" prompt then discard the card!
-    private void DrawAndShowCard(string deck)
+    public void DrawAndShowCard(string deck)
     {
         // copy reference
         List<GameObject> deckStack;
@@ -63,9 +69,22 @@ public class CardBehaviour : MonoBehaviour
         // Show our card to the camera
         remCardTrans.LookAt(playerCameraTrans, -playerCameraTrans.up);
         
-        // now move to "under" the board! (discard?)
-        
+        mostRecentCardDrawn = removedCard;
+        mostRecentCardDrawnName = removedCard.name;
     }
+    
+    
+    // Should be called after player is done looking at card
+    // some sort of UI "OK" button must be clicked for this to be called
+    public void StopLookingAtCard()
+    {
+        // move the card that is not being looked at down
+        // it will be moved back when shuffle is called when no more cards remain!
+        Transform cardTrans = mostRecentCardDrawn.GetComponent<Transform>();
+        cardTrans.position = new Vector3(cardTrans.position.x, cardTrans.position.y-100, cardTrans.position.x);
+    }
+    
+    
 
     
     
