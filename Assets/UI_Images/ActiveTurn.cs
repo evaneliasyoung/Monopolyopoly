@@ -23,12 +23,12 @@ public class ActiveTurn : MonoBehaviour
             playerTurn = target.GetComponent<GameControllerSys>().activeTurn();
 
             if (playerNum == playerTurn && active == false){
-                transform.position += new Vector3(0, 100, 0);
+                transform.position += new Vector3(0, 35, 0);
                 active = true;
             }
 
             if (playerTurn != playerNum && active == true){
-                transform.position += new Vector3(0, -100, 0);
+                transform.position += new Vector3(0, -35, 0);
                 active = false;
             }
 
