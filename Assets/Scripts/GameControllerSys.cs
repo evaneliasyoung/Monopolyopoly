@@ -20,6 +20,7 @@ public class GameControllerSys : MonoBehaviour
     public List<PlayerObj> pieces;
     public Vector3 offset;
     public Vector3 reverseOffset;
+    public int rollTotal;
 
     private int currentPlayerNum = 0;
     private PlayerObj currentPlayer;
@@ -125,6 +126,7 @@ public class GameControllerSys : MonoBehaviour
         int die2 = (int)(Random.value * 6f) + 1;
 
         Debug.Log("die1: " + die1 + " - die2: " + die2);
+        rollTotal = die1 + die2;
 
         if(currentPlayer.InJail == true)
         {
@@ -194,7 +196,7 @@ public class GameControllerSys : MonoBehaviour
 
     public int activeTurn()
     {
-        return currentPlayer;
+        return currentPlayerNum;
     }
 
     // Start is called before the first frame update
