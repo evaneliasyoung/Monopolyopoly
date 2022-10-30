@@ -257,7 +257,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                     if (nextSpace == 0)
                     {
                         PlayerMoney += 200;
-                        gameController.UpdateMoney();
+                        // gameController.UpdateMoney();
                     }
                 }
                 else if (moveSpacesCount < 0)

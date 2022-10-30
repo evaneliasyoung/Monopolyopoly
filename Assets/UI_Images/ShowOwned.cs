@@ -6,19 +6,20 @@ using UnityEngine.UI;
 public class ShowOwned : MonoBehaviour
 {
     public GameObject target;
-    public Image panel;
-    public int player;
+    public Sprite propertyColor;
+    public Sprite noColor;
+    public byte player;
+    public byte space;
 
     private byte? owner;
+    private Image image;
 
-	/** Don't refresh at 60FPS; wasteful! */
 	private float updateNSeconds = 0.25f;
 	private float lastUpdateTime = 0f;
 
     void Start()
     {
-        panel = GetComponent<Image>();
-        panel.color = Color.white;
+        image = GetComponent<Image>();
     }
 
     void Update()
@@ -26,13 +27,16 @@ public class ShowOwned : MonoBehaviour
         lastUpdateTime += Time.deltaTime;
 		if (lastUpdateTime > updateNSeconds) {
 			lastUpdateTime = 0;
-            owner = target.GetComponent<Bank>().GetPropertyOwnerByIndex(6);
-            if(owner.ToString() == player.ToString()){
-                panel.color = Color.black;
+            
+            owner = target.GetComponent<Bank>().GetPropertyOwnerByIndex(space);
+            Debug.Log("Player: " + player);
+            Debug.Log("Owner: " + owner);
+            if(player == owner){
+                image.sprite = propertyColor;
             }
-
-            Debug.Log(player);
-
+            else {
+                image.sprite = noColor;
+            }
         }
     }
 }

@@ -13,7 +13,7 @@ public class GameControllerSys : MonoBehaviour
     public GameObject rollButton;
     public GameObject buyButton;
     public GameObject moneyIndicator;
-    private TextMeshProUGUI moneyText;
+    // private TextMeshProUGUI moneyText;
     public GameObject gameController;
     public GameObject mainCamera;
     public CameraController cameraControl;
@@ -75,7 +75,7 @@ public class GameControllerSys : MonoBehaviour
                 {
                     currentPlayer.PlayerMoney -= (short)(bank.GetPropertyCostByIndex(currentSpace)/10);
                     pieces[(int)bank.GetPropertyOwnerByIndex(currentSpace)].PlayerMoney += (short)(bank.GetPropertyCostByIndex(currentSpace)/10);
-                    UpdateMoney();
+                    // UpdateMoney();
                 }
                     
                 
@@ -109,14 +109,14 @@ public class GameControllerSys : MonoBehaviour
         Debug.Log("playa: " + playa.LiquidAssets);
         Debug.Log("player: " + currentPlayer.LiquidAssets);
 
-        UpdateMoney();
+        // UpdateMoney();
         buyButton.SetActive(false);
     }
 
-    public void UpdateMoney()
-    {
-        moneyText.SetText("$" + currentPlayer.PlayerMoney);
-    }    
+    // public void UpdateMoney()
+    // {
+    //     moneyText.SetText("$" + currentPlayer.PlayerMoney);
+    // }    
 
     //Roll button triggers this function
     public void Roll()
@@ -148,7 +148,7 @@ public class GameControllerSys : MonoBehaviour
                     currentPlayer.getOutOfJail();
                     currentPlayer.TurnsInJail = 0;
                     currentPlayer.PlayerMoney -= 50;
-                    UpdateMoney();
+                    // UpdateMoney();
 
                 }
                 else
@@ -191,7 +191,7 @@ public class GameControllerSys : MonoBehaviour
         currentPlayer = pieces[currentPlayerNum];
         doubleCount = 0;
         cameraControl.TargetPlayer(currentPlayer);
-        moneyText.SetText("$" + currentPlayer.PlayerMoney);
+        // moneyText.SetText("$" + currentPlayer.PlayerMoney);
     }
 
     public int activeTurn()
@@ -212,8 +212,8 @@ public class GameControllerSys : MonoBehaviour
         pieces.Sort((x, y) => x.playerNumber.CompareTo(y.playerNumber));
         currentPlayer = pieces[currentPlayerNum];
         cameraControl.TargetPlayer(currentPlayer);
-        moneyText = moneyIndicator.GetComponent<TextMeshProUGUI>();
-        moneyText.SetText("$" + currentPlayer.PlayerMoney);
+        // moneyText = moneyIndicator.GetComponent<TextMeshProUGUI>();
+        // moneyText.SetText("$" + currentPlayer.PlayerMoney);
         bank = gameController.GetComponent<Bank>();
     }
 
