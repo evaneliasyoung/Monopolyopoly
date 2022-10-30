@@ -16,4 +16,10 @@ public interface IStreet : IProperty, IHousingProvider
     /// </summary>
     /// <value>The demolish liquidity value.</value>
     public Byte ResidenceValue { get; }
+
+    /// <summary>
+    /// The liquidity required when staying at a street.
+    /// </summary>
+    /// <value>Rent per the number of houses.</value>
+    public UInt16[] RentCosts { get; }
 }

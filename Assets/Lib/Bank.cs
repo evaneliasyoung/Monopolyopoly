@@ -1,39 +1,53 @@
 using System;
 using System.Collections.Generic;
-using UnityEngine;
 
-public class Bank : MonoBehaviour
+public class Bank
 {
+    private readonly Byte RailMonopolyScaling = 50;
+    private readonly Byte UtilityBaseScale = 4;
+    private readonly Byte UtilityMonopolyScale = 10;
+    private readonly Byte IncomeTax = 200;
+    private readonly Byte LuxuryTax = 75;
+    private readonly Byte[][] Monopolies = new Byte[8][]{
+        new Byte[2]{1,3},
+        new Byte[3]{6,8,9},
+        new Byte[3]{11,13,14},
+        new Byte[3]{16,18,19},
+        new Byte[3]{21,23,24},
+        new Byte[3]{26,27,29},
+        new Byte[3]{31,32,34},
+        new Byte[2]{37,39}
+    };
     public Byte Houses { get; set; } = 32;
     public Byte Hotels { get; set; } = 12;
     public Dictionary<Byte, Street> Streets { get; } = new Dictionary<byte, Street>();
     public Dictionary<Byte, Property> Properties { get; } = new Dictionary<byte, Property>();
 
-    private void Start()
+    public Bank()
     {
         // Streets
-        Streets.Add(1, new Street(1, 60));
-        Streets.Add(3, new Street(3, 60));
-        Streets.Add(6, new Street(6, 100));
-        Streets.Add(8, new Street(8, 100));
-        Streets.Add(9, new Street(9, 120));
-        Streets.Add(11, new Street(11, 140));
-        Streets.Add(13, new Street(13, 140));
-        Streets.Add(14, new Street(14, 160));
-        Streets.Add(16, new Street(16, 180));
-        Streets.Add(18, new Street(18, 180));
-        Streets.Add(19, new Street(19, 200));
-        Streets.Add(21, new Street(21, 220));
-        Streets.Add(23, new Street(23, 220));
-        Streets.Add(24, new Street(24, 240));
-        Streets.Add(26, new Street(26, 260));
-        Streets.Add(27, new Street(27, 260));
-        Streets.Add(29, new Street(29, 280));
-        Streets.Add(31, new Street(31, 300));
-        Streets.Add(32, new Street(32, 300));
-        Streets.Add(34, new Street(34, 320));
-        Streets.Add(37, new Street(37, 350));
-        Streets.Add(39, new Street(39, 400));
+        Streets.Add(1, new Street(1, 60, new UInt16[6] { 2, 10, 30, 90, 160, 250 }));
+        Streets.Add(3, new Street(3, 60, new UInt16[6] { 4, 20, 60, 180, 320, 450 }));
+        Streets.Add(6, new Street(6, 100, new UInt16[6] { 6, 30, 90, 270, 400, 550 }));
+        Streets.Add(8, new Street(8, 100, new UInt16[6] { 6, 30, 90, 270, 400, 550 }));
+        Streets.Add(9, new Street(9, 120, new UInt16[6] { 8, 40, 100, 300, 450, 600 }));
+        Streets.Add(11, new Street(11, 140, new UInt16[6] { 10, 50, 150, 450, 625, 750 }));
+        Streets.Add(13, new Street(13, 140, new UInt16[6] { 10, 50, 150, 450, 625, 750 }));
+        Streets.Add(14, new Street(14, 160, new UInt16[6] { 12, 60, 180, 500, 700, 900 }));
+        Streets.Add(16, new Street(16, 180, new UInt16[6] { 14, 70, 200, 550, 750, 950 }));
+        Streets.Add(18, new Street(18, 180, new UInt16[6] { 14, 70, 200, 550, 750, 950 }));
+        Streets.Add(19, new Street(19, 200, new UInt16[6] { 16, 80, 220, 600, 800, 1000 }));
+        Streets.Add(21, new Street(21, 220, new UInt16[6] { 18, 90, 250, 700, 875, 1050 }));
+        Streets.Add(23, new Street(23, 220, new UInt16[6] { 18, 90, 250, 700, 875, 1050 }));
+        Streets.Add(24, new Street(24, 240, new UInt16[6] { 20, 100, 300, 750, 925, 1100, }));
+        Streets.Add(26, new Street(26, 260, new UInt16[6] { 22, 110, 330, 800, 975, 1150 }));
+        Streets.Add(27, new Street(27, 260, new UInt16[6] { 22, 110, 330, 800, 975, 1150 }));
+        Streets.Add(29, new Street(29, 280, new UInt16[6] { 24, 120, 360, 850, 1025, 1200 }));
+        Streets.Add(31, new Street(31, 300, new UInt16[6] { 26, 130, 390, 900, 1100, 1275 }));
+        Streets.Add(32, new Street(32, 300, new UInt16[6] { 26, 130, 390, 900, 1100, 1275 }));
+        Streets.Add(34, new Street(34, 320, new UInt16[6] { 28, 150, 450, 1000, 1200, 1400 }));
+        Streets.Add(37, new Street(37, 350, new UInt16[6] { 35, 175, 500, 1100, 1300, 1500 }));
+        Streets.Add(39, new Street(39, 400, new UInt16[6] { 50, 200, 600, 1400, 1700, 2000 }));
 
         // Railroads
         Properties.Add(5, new Property(5, 200));
@@ -80,6 +94,86 @@ public class Bank : MonoBehaviour
     public UInt16 GetPropertyCostByIndex(Byte Index)
     {
         return GetPropertyByIndex(Index).Price;
+    }
+
+    public Boolean StreetIsMonopolized(Street street)
+    {
+        if (!street.IsForSale)
+        {
+            Byte boardIndex = street.Index;
+            Byte monopolyIndex = Convert.ToByte(Math.Floor(boardIndex / 5D));
+            foreach (Byte testIndex in Monopolies[monopolyIndex])
+            {
+                if (testIndex == boardIndex) continue; // Skip the "selected" Street
+                else if (GetPropertyOwnerByIndex(testIndex) != street.Owner) return false;
+            }
+            return true;
+        }
+        return false;
+    }
+
+    private Byte GetRailRent(Property Rail)
+    {
+        Byte rent = RailMonopolyScaling;
+        for (Byte i = 5; i < 45; i += 10)
+        {
+            if (i == Rail.Index) continue;
+            else if (GetPropertyOwnerByIndex(i) == Rail.Owner) rent += RailMonopolyScaling;
+        }
+        return rent;
+    }
+
+    private UInt16 GetUtilityRent(Property Utility, Byte RollValue = 7)
+    {
+        return (UInt16)(RollValue * (
+            GetPropertyOwnerByIndex(Utility.Index == 12 ? (byte)28 : (byte)12) == Utility.Owner
+                ? UtilityMonopolyScale
+                : UtilityBaseScale
+        ));
+    }
+
+    private UInt16 GetStreetRent(Street street)
+    {
+        return street.Housing > (byte)0
+            ? street.RentCosts[street.Housing]
+            : StreetIsMonopolized(street)
+                ? (UInt16)(2 * street.RentCosts[0])
+                : street.RentCosts[0];
+    }
+
+    public UInt16 GetPropertyRent(Property property, PlayerObj player)
+    {
+        if (property.Owner.HasValue && property.Owner != player.Index)
+        {
+            switch (property.PropertyType)
+            {
+                case PropertyTileType.Street:
+                    return GetStreetRent((Street)property);
+                case PropertyTileType.Rail:
+                    return GetRailRent(property);
+                case PropertyTileType.Utility:
+                    return GetUtilityRent(property);
+            }
+        }
+        return 0;
+    }
+
+    public UInt16 GetTileRent(TileSpace tile, PlayerObj player)
+    {
+        switch (tile.TileType)
+        {
+            case TileType.Tax:
+                return tile.Index == 4 ? IncomeTax : LuxuryTax;
+            case TileType.Property:
+                return GetPropertyRent(GetPropertyByIndex(tile.Index), player);
+            default:
+                return 0;
+        }
+    }
+
+    public UInt16 GetTileRentByIndex(Byte Index, PlayerObj player)
+    {
+        return GetTileRent(new TileSpace(Index), player);
     }
 
     public bool OwnerCanPurchaseProperty(IPropertyOwner Owner, IProperty Property)
