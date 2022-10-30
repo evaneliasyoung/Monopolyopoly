@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -7,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerObj : MonoBehaviour, IPropertyOwner
 {
-    public byte IWithindex;
+    public byte Index;
     public int LiquidAssets;
 
     public GameControllerSys gameController;
@@ -40,7 +39,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     private bool moving = false;
 
     private int currentSpace = 0;
-    public int CurrentSpace 
+    public int CurrentSpace
     {
         get { return currentSpace; }
     }
@@ -56,7 +55,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     }
 
     //Public variables to be modified and accessed
-    
+
     public short PlayerMoney { get; set; } = 1500;
     public int JailFreeCards { get; set; } = 0;
     public int TurnsInJail { get; set; } = 0;
@@ -226,7 +225,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
             moving = false;
         }
     }
-    
+
     //Start is called at the first frame
     void Start()
     {
@@ -281,7 +280,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                 }
 
                 InitializeInterpolation();
-                    
+
             }
             //absolute movement
             else if (!jumpCounter && currentSpace != targetSpace)
@@ -308,7 +307,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                 }
 
                 InitializeInterpolation();
-                    
+
             }
         }
 
@@ -329,7 +328,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                     moveComplete = true;
                     gameController.Stop();
                 }
-                
+
             }
         }
 
