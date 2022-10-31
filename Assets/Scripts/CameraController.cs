@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
+    private bool playerFocus = true;
+
 
     public List<PlayerObj> pieces;
     public PlayerObj piece;
@@ -46,6 +48,18 @@ public class CameraController : MonoBehaviour
 
     }
     */
+
+    public void FocusCard()
+    {
+        playerFocus = false;
+        mainCamera.transform.position = new Vector3(-5f, 3f, 0f);
+        mainCamera.transform.eulerAngles = new Vector3(10f, 90f, 0f);
+    }
+
+    public void FocusPlayer()
+    {
+        playerFocus = true;
+    }
 
     public void TargetPlayer(PlayerObj player)
     {
@@ -93,20 +107,22 @@ public class CameraController : MonoBehaviour
         }
         */
 
-        
+        if (playerFocus)
+        {
+            Vector3 piecePos = piece.transform.position;
+            Vector3 pieceXZ = new Vector3(piecePos.x, 0, piecePos.z);
+            if (piece.CurrentSpace >= 11 && piece.CurrentSpace <= 30)
+            {
 
-        Vector3 piecePos = piece.transform.position;
-        Vector3 pieceXZ = new Vector3(piecePos.x, 0, piecePos.z);
-        if (piece.CurrentSpace >= 11 && piece.CurrentSpace <= 30)
-        {
-            
-            mainCamera.transform.position = pieceXZ + reverseOffset;
-            mainCamera.transform.eulerAngles = reverseAngle;
+                mainCamera.transform.position = pieceXZ + reverseOffset;
+                mainCamera.transform.eulerAngles = reverseAngle;
+            }
+            else
+            {
+                mainCamera.transform.position = pieceXZ + offset;
+                mainCamera.transform.eulerAngles = angle;
+            }
         }
-        else
-        {
-            mainCamera.transform.position = pieceXZ + offset;
-            mainCamera.transform.eulerAngles = angle;
-        }
+        
     }
 }

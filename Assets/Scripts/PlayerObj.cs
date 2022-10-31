@@ -267,8 +267,9 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                     if (nextSpace == 0)
                     {
                         PlayerMoney += 200;
-                        gameController.UpdateMoney();
+                        //gameController.UpdateMoney();
                     }
+                        
                 }
                 else if (moveSpacesCount < 0)
                     nextSpace = mod((currentSpace - 1), spaces);
@@ -303,7 +304,15 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                         inJail = false;
                     }
                     else
+                    {
                         nextSpace = (currentSpace + 1) % spaces;
+                        if (nextSpace == 0)
+                        {
+                            PlayerMoney += 200;
+                            //gameController.UpdateMoney();
+                        }
+                    }
+                        
                 }
 
                 InitializeInterpolation();

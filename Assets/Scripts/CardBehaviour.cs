@@ -31,7 +31,8 @@ public class CardBehaviour : MonoBehaviour
         Shuffle("community");
         Shuffle("chance");
         
-        DrawAndShowCard("community");
+        //DrawAndShowCard("chance");
+        //Debug.Log(mostRecentCardDrawnName);
     }
 
     

@@ -8,32 +8,38 @@ using TMPro;
 /// </summary>
 public class GameControllerSys : MonoBehaviour
 {
+    //public variables
+    public short jailCost = 50;
     public float moveTime = 0.5f;
     public bool instantMoves = false;
+
+    //public objects
     public Bank bank;
-    public GameObject passButton;
-    public GameObject rollButton;
-    public GameObject buyButton;
     public GameObject moneyIndicator;
-    private TextMeshProUGUI moneyText;
     public GameObject gameController;
     public GameObject mainCamera;
     public CameraController cameraControl;
     public List<PlayerObj> pieces;
-    public Vector3 offset;
-    public Vector3 reverseOffset;
-
-    public short jailCost = 50;
-
-    private int currentPlayerNum = 0;
-    private PlayerObj currentPlayer;
+    public GameObject cards;
     public PlayerObj CurrentPlayer
     {
         get { return currentPlayer; }
     }
 
-    private byte tempByte;
+    //private objects
+    private TextMeshProUGUI moneyText;
+    private CardBehaviour cardScript;
 
+    //button objects
+    public GameObject passButton;
+    public GameObject rollButton;
+    public GameObject buyButton;
+    public GameObject nextButton;
+    
+
+    //private variables
+    private int currentPlayerNum = 0;
+    private PlayerObj currentPlayer;
     private bool doubles = false;
     private int doubleCount = 0;
 
@@ -80,17 +86,28 @@ public class GameControllerSys : MonoBehaviour
                 {
                     currentPlayer.PlayerMoney -= (short)(bank.GetPropertyCostByIndex(currentSpace)/10);
                     pieces[(int)bank.GetPropertyOwnerByIndex(currentSpace)].PlayerMoney += (short)(bank.GetPropertyCostByIndex(currentSpace)/10);
-                    UpdateMoney();
+                    //UpdateMoney();
                 }
                     
                 
                 break;
+
             case TileType.Chance:
                 Debug.Log("chance");
-                break;
+                cameraControl.FocusCard();
+                cardScript.DrawAndShowCard("chance");
+                passButton.SetActive(false);
+                nextButton.SetActive(true);
+                return;
+
             case TileType.CommunityChest:
                 Debug.Log("community chest");
-                break;
+                cameraControl.FocusCard();
+                cardScript.DrawAndShowCard("community");
+                passButton.SetActive(false);
+                nextButton.SetActive(true);
+                return;
+
             case TileType.Tax:
                 Debug.Log("tax");
                 //income tax
@@ -101,7 +118,7 @@ public class GameControllerSys : MonoBehaviour
                 else
                     Debug.Log("what?!");
 
-                UpdateMoney();
+                //UpdateMoney();
                 break;
 
             //corner is usually nothing
@@ -119,14 +136,14 @@ public class GameControllerSys : MonoBehaviour
     }
 
     /// <summary>
-    /// called by the Buy button
+    /// Called by the Buy button. Buys property
     /// </summary>
     public void Buy()
     {
         if (currentPlayer.InJail)
         {
             currentPlayer.PlayerMoney -= jailCost;
-            UpdateMoney();
+            //UpdateMoney();
             currentPlayer.getOutOfJail();
             currentPlayer.TurnsInJail = 0;
             buyButton.SetActive(false);
@@ -141,7 +158,7 @@ public class GameControllerSys : MonoBehaviour
         Debug.Log("playa: " + playa.LiquidAssets);
         Debug.Log("player: " + currentPlayer.LiquidAssets);
 
-        UpdateMoney();
+        //UpdateMoney();
         buyButton.SetActive(false);
     }
 
@@ -154,7 +171,7 @@ public class GameControllerSys : MonoBehaviour
     }
 
     /// <summary>
-    /// called by the Roll button
+    /// Called by the Roll button. Rolls dice and moves piece
     /// </summary>
     public void Roll()
     {
@@ -187,7 +204,7 @@ public class GameControllerSys : MonoBehaviour
                     currentPlayer.getOutOfJail();
                     currentPlayer.TurnsInJail = 0;
                     currentPlayer.PlayerMoney -= jailCost;
-                    UpdateMoney();
+                    //UpdateMoney();
 
                 }
                 else
@@ -201,7 +218,11 @@ public class GameControllerSys : MonoBehaviour
 
 
         if(instantMoves)
+        {
+            if (currentPlayer.CurrentSpace + die1 + die2 > 39)
+                currentPlayer.PlayerMoney += 200;
             currentPlayer.directJumpSpaces(die1 + die2);
+        }  
         else
             currentPlayer.moveSpaces(die1 + die2);
 
@@ -223,6 +244,137 @@ public class GameControllerSys : MonoBehaviour
             }
         }
     }
+
+    /// <summary>
+    /// Called by next button. Used when done looking at a card
+    /// </summary>
+    public void Next()
+    {
+        bool unmoved = false;
+        cameraControl.FocusPlayer();
+        nextButton.SetActive(false);
+
+        string pulledCard = cardScript.mostRecentCardDrawnName;
+
+        Debug.Log(pulledCard);
+
+        switch (pulledCard)
+        {
+            case "chance1":
+                currentPlayer.PlayerMoney += 150;
+                unmoved = true;
+                break;
+
+            case "chance2": //go to "go"
+                if (instantMoves)
+                {
+                    currentPlayer.PlayerMoney += 200;
+                    currentPlayer.directJumpTo(0);
+                }
+                else
+                    currentPlayer.moveTo(0);
+                break;
+
+            case "chance3": //go to green door brewery
+                if (instantMoves)
+                    currentPlayer.directJumpTo(39);
+                else
+                    currentPlayer.moveTo(39);
+                break;
+
+            case "chance4": //go to carmellos pizza
+                if (instantMoves)
+                {
+                    if (currentPlayer.CurrentSpace > 1)
+                        currentPlayer.PlayerMoney += 200;
+                    currentPlayer.directJumpTo(1);
+                }
+                else
+                    currentPlayer.moveTo(1);
+                break;
+
+            case "chance5": //go to nearest laundromat
+
+                if (currentPlayer.CurrentSpace > 28)
+                {
+                    if (instantMoves)
+                    {
+                        currentPlayer.PlayerMoney += 200;
+                        currentPlayer.directJumpTo(12);
+                    }
+                    else
+                        currentPlayer.moveTo(12);
+                }
+                else if (currentPlayer.CurrentSpace < 12)
+                {
+                    if (instantMoves)
+                        currentPlayer.directJumpTo(12);
+                    else
+                        currentPlayer.moveTo(12);
+                }
+                else if (currentPlayer.CurrentSpace < 28)
+                {
+                    if (instantMoves)
+                        currentPlayer.directJumpTo(28);
+                    else
+                        currentPlayer.moveTo(28);
+                }
+                break;
+
+            case "chance6": //go back 3 spaces
+                if (instantMoves)
+                    currentPlayer.directJumpSpaces(-3);
+                else
+                    currentPlayer.moveSpaces(-3);
+                break;
+
+
+            case "community1":
+                currentPlayer.JailFreeCards += 1;
+                unmoved = true;
+                break;
+
+            case "community2":
+                currentPlayer.PlayerMoney -= 100;
+                unmoved = true;
+                break;
+
+            case "community3":
+                currentPlayer.PlayerMoney += 200;
+                unmoved = true;
+                break;
+
+            case "community4":
+                foreach (PlayerObj player in pieces)
+                {
+                    player.PlayerMoney -= 10;
+                    currentPlayer.PlayerMoney += 10;
+                }
+                unmoved = true;
+                break;
+
+            case "community5":
+                currentPlayer.PlayerMoney -= 50;
+                unmoved = true;
+                break;
+
+            case "community6":
+                currentPlayer.PlayerMoney += 50;
+                unmoved = true;
+                break;
+        }
+
+        cardScript.StopLookingAtCard();
+
+        if (unmoved)
+        {
+            passButton.SetActive(true);
+        }
+
+        //passButton.SetActive(true);
+        
+    }
+
 
     /// <summary>
     /// Player is done with their turn, called by Pass button
@@ -248,25 +400,31 @@ public class GameControllerSys : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        passButton.SetActive(false);
-        buyButton.SetActive(false);
-        rollButton.SetActive(true);
-        
+        //set objects
         gameController = this.gameObject;
         cameraControl = mainCamera.GetComponent<CameraController>();
         pieces = new List<PlayerObj>(gameController.GetComponentsInChildren<PlayerObj>());
+        moneyText = moneyIndicator.GetComponent<TextMeshProUGUI>();
+        bank = gameController.GetComponent<Bank>();
+        cardScript = cards.GetComponent<CardBehaviour>();
+
+        //use objects
         pieces.Sort((x, y) => x.playerNumber.CompareTo(y.playerNumber));
         currentPlayer = pieces[currentPlayerNum];
         cameraControl.TargetPlayer(currentPlayer);
-        moneyText = moneyIndicator.GetComponent<TextMeshProUGUI>();
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
-        bank = gameController.GetComponent<Bank>();
+
+        //set buttons
+        passButton.SetActive(false);
+        buyButton.SetActive(false);
+        rollButton.SetActive(true);
+        nextButton.SetActive(false);
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        UpdateMoney();
     }
 
     

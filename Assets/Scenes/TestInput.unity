@@ -140,7 +140,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IWithindex: 0
+  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
@@ -587,7 +587,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e5f308afa6ebf64cbaedb605b2c8284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveTime: 0.2
+  moveTime: 0.01
   instantMoves: 1
   bank: {fileID: 0}
   passButton: {fileID: 478772717}
@@ -1328,7 +1328,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IWithindex: 0
+  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
@@ -1358,7 +1358,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IWithindex: 0
+  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
@@ -1924,7 +1924,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  IWithindex: 0
+  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}

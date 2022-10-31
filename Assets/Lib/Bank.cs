@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class Bank
+public class Bank : MonoBehaviour
 {
     private readonly Byte RailMonopolyScaling = 50;
     private readonly Byte UtilityBaseScale = 4;
