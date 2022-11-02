@@ -598,6 +598,11 @@ public class GameControllerSys : MonoBehaviour
         QueueDescision("new turn");
     }
 
+    public int activeTurn()
+    {
+        return currentPlayerNum;
+    }
+
     // Start is called before the first frame update
     void Start()
     {

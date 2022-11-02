@@ -12,6 +12,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     public GameControllerSys gameController;
     public GameObject transforms;
     public GameObject piece;
+    public string playerName;
     private List<Transform> positions;
 
     private int targetSpace = 0;
