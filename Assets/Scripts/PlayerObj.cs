@@ -53,9 +53,14 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     {
         get { return moveComplete; }
     }
+    private bool bankrupt = false;
+    public bool Bankrupt
+    {
+        get { return bankrupt; }
+    }
 
     //Public variables to be modified and accessed
-
+    public bool IsAi { get; set; } = false;
     public short PlayerMoney { get; set; } = 1500;
     public int JailFreeCards { get; set; } = 0;
     public int TurnsInJail { get; set; } = 0;
@@ -71,6 +76,16 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     public byte playerNumber;
     public Vector3 offset;
     public Vector3 visitingOffset;
+
+    /// <summary>
+    /// Use when the player becomes bankrupt
+    /// </summary>
+    public void SetBankrupt()
+    {
+        bankrupt = true;
+        piece.SetActive(false);
+    }
+
 
     /// <summary>
     /// Sends piece to jail

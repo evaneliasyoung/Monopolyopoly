@@ -21,6 +21,7 @@ public class GameControllerSys : MonoBehaviour
     public CameraController cameraControl;
     public List<PlayerObj> pieces;
     public GameObject cards;
+    public diceParentScript diceScript;
     public PlayerObj CurrentPlayer
     {
         get { return currentPlayer; }
@@ -35,6 +36,7 @@ public class GameControllerSys : MonoBehaviour
     public GameObject rollButton;
     public GameObject buyButton;
     public GameObject nextButton;
+    public GameObject jailFreeButton;
     
 
     //private variables
@@ -43,23 +45,30 @@ public class GameControllerSys : MonoBehaviour
     private bool doubles = false;
     private int doubleCount = 0;
 
+    private string state = "start";
+    public List<string> disQueue = new List<string>();
+
     /// <summary>
-    /// Called by PlayerObj when it stops moving
+    /// Called when PlayerObj lands on a space
     /// </summary>
     public void Stop()
     {
-        //rolled doubles, roll again
-        if (doubles)
-        {
-            rollButton.SetActive(true);
-            doubles = false;
-            return;
-        }
+        clearButtons();
 
         //player landed in jail, can only pass to next player.
         if (currentPlayer.InJail)
         {
-            passButton.SetActive(true);
+            //passButton.SetActive(true);
+            QueueDescision("pass");
+            return;
+        }
+
+        //rolled doubles, roll again
+        if (doubles)
+        {
+            //rollButton.SetActive(true);
+            QueueDescision("new turn");
+            doubles = false;
             return;
         }
 
@@ -74,56 +83,71 @@ public class GameControllerSys : MonoBehaviour
         {
             //landed on a property
             case TileType.Property:
-                Debug.Log("property");
+                //Debug.Log("property");
 
                 //property is available. player can buy
                 if (bank.OwnerCanPurchaseProperty(currentPlayer, currentSpace))
                 {
-                    buyButton.SetActive(true);
+                    //player has the money
+                    if (currentPlayer.PlayerMoney >= bank.GetPropertyCostByIndex(currentSpace))
+                    {
+                        QueueDescision("buy");
+                        return;
+                    }
                 }
-                //property is unavaiable. player must pay rent
-                else if (!bank.GetPropertyByIndex(currentSpace).IsForSale)
+                //player owns the property
+                else if (bank.GetPropertyOwnerByIndex(currentSpace) == currentPlayerNum)
                 {
-                    currentPlayer.PlayerMoney -= (short)(bank.GetPropertyCostByIndex(currentSpace)/10);
-                    pieces[(int)bank.GetPropertyOwnerByIndex(currentSpace)].PlayerMoney += (short)(bank.GetPropertyCostByIndex(currentSpace)/10);
-                    //UpdateMoney();
+                    Debug.Log("my prop");
+                    //tile is a street
+                    Property tileProp = bank.GetPropertyByIndex(currentSpace);
+                    if (tileProp.PropertyType == PropertyTileType.Street)
+                    {
+                        //street is monopolized
+                        if (bank.StreetIsMonopolized(bank.GetStreetByIndex(currentSpace)))
+                        {
+                            //player has the money
+                            if (currentPlayer.PlayerMoney >= bank.GetPropertyCostByIndex(currentSpace))
+                            {
+                                QueueDescision("buy");
+                                return;
+                            }
+                        }
+                    }
+                }
+                //property is owned by other
+                else
+                {
+                    Debug.Log("other prop");
+                    short cost = (short)bank.GetTileRentByIndex(currentSpace, currentPlayer);
+
+                    currentPlayer.PlayerMoney -= cost;
+                    pieces[(int)bank.GetPropertyOwnerByIndex(currentSpace)].PlayerMoney += cost;
                 }
                     
                 
                 break;
 
             case TileType.Chance:
-                Debug.Log("chance");
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("chance");
-                passButton.SetActive(false);
-                nextButton.SetActive(true);
+                QueueDescision("next");
+                state = "card";
                 return;
 
             case TileType.CommunityChest:
-                Debug.Log("community chest");
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("community");
-                passButton.SetActive(false);
-                nextButton.SetActive(true);
+                QueueDescision("next");
+                state = "card";
                 return;
 
             case TileType.Tax:
-                Debug.Log("tax");
-                //income tax
-                if (currentSpace == 4)
-                    currentPlayer.PlayerMoney -= 200;
-                else if (currentSpace == 38)
-                    currentPlayer.PlayerMoney -= 100;
-                else
-                    Debug.Log("what?!");
-
-                //UpdateMoney();
+                currentPlayer.PlayerMoney -= (short)bank.GetTileRentByIndex(currentSpace, currentPlayer);
                 break;
 
             //corner is usually nothing
             case TileType.Corner:
-                Debug.Log("corner");
                 //space 30 is the go to jail space
                 if (currentSpace == 30)
                 {
@@ -132,7 +156,8 @@ public class GameControllerSys : MonoBehaviour
                 }
                 break;
         }
-        passButton.SetActive(true);
+        QueueDescision("pass");
+        //passButton.SetActive(true);
     }
 
     /// <summary>
@@ -140,26 +165,33 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Buy()
     {
+        clearButtons();
         if (currentPlayer.InJail)
         {
             currentPlayer.PlayerMoney -= jailCost;
-            //UpdateMoney();
             currentPlayer.getOutOfJail();
             currentPlayer.TurnsInJail = 0;
-            buyButton.SetActive(false);
-            rollButton.SetActive(false);
-            passButton.SetActive(true);
+            QueueDescision("pass");
             return;
         }
 
-        IPropertyOwner playa = (IPropertyOwner)currentPlayer; 
-        bank.PurchaseProperty(ref playa, (byte)currentPlayer.CurrentSpace);
+        byte currentSpace = (byte)currentPlayer.CurrentSpace;
+
+        IPropertyOwner playa = (IPropertyOwner)currentPlayer;
+
+        //player owns space, buy residence
+        if (bank.GetPropertyOwnerByIndex(currentSpace) == currentPlayerNum)
+        {
+            bank.BuildResidence(ref playa, currentSpace);
+            return;
+        }
+
+        bank.PurchaseProperty(ref playa, currentSpace);
 
         Debug.Log("playa: " + playa.LiquidAssets);
         Debug.Log("player: " + currentPlayer.LiquidAssets);
 
-        //UpdateMoney();
-        buyButton.SetActive(false);
+        QueueDescision("pass");
     }
 
     /// <summary>
@@ -171,20 +203,53 @@ public class GameControllerSys : MonoBehaviour
     }
 
     /// <summary>
-    /// Called by the Roll button. Rolls dice and moves piece
+    /// called by roll button
     /// </summary>
     public void Roll()
     {
+        clearButtons();
+
+        if (instantMoves)
+        {
+            int die1 = (int)(Random.value * 6f) + 1;
+            int die2 = (int)(Random.value * 6f) + 1;
+            MovePiece(die1, die2);
+            return;
+        }
+
+        state = "dice";
+        cameraControl.FocusDice();
+        diceScript.Roll();
+    }
+
+    /// <summary>
+    /// Player uses a Get Out of Jail Free card
+    /// </summary>
+    public void GetOutFree()
+    {
+        clearButtons();
+
+        currentPlayer.JailFreeCards -= 1;
+        currentPlayer.getOutOfJail();
+        currentPlayer.TurnsInJail = 0;
+        QueueDescision("pass");
+
+    }
+
+    /// <summary>
+    /// Called when roll is complete. Rolls dice and moves piece
+    /// </summary>
+    public void MovePiece(int die1, int die2)
+    {
+        cameraControl.FocusPlayer();
         currentPlayer.MoveTime = moveTime;
-        rollButton.SetActive(false);
-        int die1 = (int)(Random.value * 6f) + 1;
-        int die2 = (int)(Random.value * 6f) + 1;
 
         Debug.Log("die1: " + die1 + " - die2: " + die2);
 
         if(currentPlayer.InJail == true)
         {
-            buyButton.SetActive(false);
+            //get out of jail is a movement and will trigger Stop()
+            clearButtons();
             //rolled doubles in jail
             if (die1 == die2)
             {
@@ -204,13 +269,11 @@ public class GameControllerSys : MonoBehaviour
                     currentPlayer.getOutOfJail();
                     currentPlayer.TurnsInJail = 0;
                     currentPlayer.PlayerMoney -= jailCost;
-                    //UpdateMoney();
-
                 }
                 else
                 {
                     //still in jail, next turn
-                    passButton.SetActive(true);
+                    QueueDescision("pass");
                 }
             }
             return;
@@ -245,14 +308,47 @@ public class GameControllerSys : MonoBehaviour
         }
     }
 
+
     /// <summary>
-    /// Called by next button. Used when done looking at a card
+    /// called by diceParentScript
+    /// </summary>
+    /// <param name="die1">value of 1st die</param>
+    /// <param name="die2">value of 2nd die</param>
+    public void RollDone()
+    {
+        //nextButton.SetActive(true);
+        state = "dice";
+        QueueDescision("next");
+    }
+
+    /// <summary>
+    /// Called by next button
     /// </summary>
     public void Next()
     {
+        //nextButton.SetActive(false);
+        clearButtons();
+        switch (state)
+        {
+            case "card":
+                CardEffect();
+                break;
+            case "dice":
+                MovePiece(diceScript.DieVal1, diceScript.DieVal2);
+                break;
+            case "start":
+                QueueDescision("new turn");
+                break;
+        }
+    }
+
+    /// <summary>
+    /// Called by next after card is found. Used when done looking at a card
+    /// </summary>
+    public void CardEffect()
+    {
         bool unmoved = false;
         cameraControl.FocusPlayer();
-        nextButton.SetActive(false);
 
         string pulledCard = cardScript.mostRecentCardDrawnName;
 
@@ -347,8 +443,11 @@ public class GameControllerSys : MonoBehaviour
             case "community4":
                 foreach (PlayerObj player in pieces)
                 {
-                    player.PlayerMoney -= 10;
-                    currentPlayer.PlayerMoney += 10;
+                    if (!player.Bankrupt)
+                    {
+                        player.PlayerMoney -= 10;
+                        currentPlayer.PlayerMoney += 10;
+                    }
                 }
                 unmoved = true;
                 break;
@@ -368,33 +467,135 @@ public class GameControllerSys : MonoBehaviour
 
         if (unmoved)
         {
-            passButton.SetActive(true);
+            QueueDescision("pass");
+            //passButton.SetActive(true);
         }
 
         //passButton.SetActive(true);
         
     }
 
+    /// <summary>
+    /// clears the buttons from the screen
+    /// </summary>
+    void clearButtons()
+    {
+        buyButton.SetActive(false);
+        nextButton.SetActive(false);
+        passButton.SetActive(false);
+        rollButton.SetActive(false);
+        jailFreeButton.SetActive(false);
+    }
+
+    /// <summary>
+    /// if AI, pushes the next descision to queue, if player puts button on screen
+    /// </summary>
+    /// <param name="descision">Descision name</param>
+    void QueueDescision(string descision)
+    {
+        Debug.Log(descision);
+
+        if (currentPlayer.IsAi)
+            disQueue.Add(descision);
+        else
+            GetDescision(descision);
+    }
+
+    /// <summary>
+    /// used by queue descision to actually make the desicion
+    /// </summary>
+    /// <param name="descision"></param>
+    void GetDescision(string descision)
+    {
+        if (currentPlayer.IsAi)
+            Debug.Log("ai: " + descision);
+
+        switch (descision)
+        {
+            case "new turn":
+                if (currentPlayer.IsAi)
+                    Roll();
+                else
+                    rollButton.SetActive(true);
+                break;
+            case "next":
+                if (currentPlayer.IsAi)
+                    Next();
+                else
+                    nextButton.SetActive(true);
+                break;
+            case "pass":
+                if (currentPlayer.IsAi)
+                    Pass();
+                else
+                    passButton.SetActive(true);
+                break;
+            case "buy":
+                if (currentPlayer.IsAi)
+                    Buy();
+                else
+                {
+                    buyButton.SetActive(true);
+                    passButton.SetActive(true);
+                }
+                break;
+
+            case "in jail":
+                if (currentPlayer.IsAi)
+                {
+                    Roll();
+                }
+                else
+                {
+                    if (currentPlayer.PlayerMoney >= jailCost)
+                        buyButton.SetActive(true);
+                    if (currentPlayer.JailFreeCards >= 1)
+                        jailFreeButton.SetActive(true);
+                    rollButton.SetActive(true);
+                }
+                break;
+
+        }
+
+    }
 
     /// <summary>
     /// Player is done with their turn, called by Pass button
     /// </summary>
     public void Pass()
     {
-        passButton.SetActive(false);
-        buyButton.SetActive(false);
-        rollButton.SetActive(true);
+        clearButtons();
+        //passButton.SetActive(false);
+        //buyButton.SetActive(false);
+        //rollButton.SetActive(true);
+        bool noneActive = true;
+        for (int i = 0; i < pieces.Count; i++)
+        {
+            currentPlayerNum = (currentPlayerNum + 1) % pieces.Count;
+            currentPlayer = pieces[currentPlayerNum];
+            if(!currentPlayer.Bankrupt)
+            {
+                noneActive = false;
+                break;
+            }
+        }
 
-        currentPlayerNum = (currentPlayerNum + 1) % pieces.Count;
-        currentPlayer = pieces[currentPlayerNum];
+        if (noneActive)
+        {
+            Debug.Log("everyone died");
+            return;
+        }
+
         doubleCount = 0;
         cameraControl.TargetPlayer(currentPlayer);
-        moneyText.SetText("$" + currentPlayer.PlayerMoney);
 
         if (currentPlayer.InJail)
         {
-            buyButton.SetActive(true);
+            QueueDescision("in jail");
+            return;
         }
+
+        QueueDescision("new turn");
     }
 
     // Start is called before the first frame update
@@ -414,17 +615,27 @@ public class GameControllerSys : MonoBehaviour
         cameraControl.TargetPlayer(currentPlayer);
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
 
+        //pieces[0].IsAi = true;
+        //pieces[1].IsAi = true;
+        pieces[2].SetBankrupt();
+        pieces[3].SetBankrupt();
+
         //set buttons
-        passButton.SetActive(false);
-        buyButton.SetActive(false);
-        rollButton.SetActive(true);
-        nextButton.SetActive(false);
+        clearButtons();
+
+        nextButton.SetActive(true);
     }
 
     // Update is called once per frame
     void Update()
     {
         UpdateMoney();
+        if (disQueue.Count > 0)
+        {
+            Debug.Log("update: " + disQueue[0]);
+            GetDescision(disQueue[0]);
+            disQueue.RemoveAt(0);
+        }
     }
 
     

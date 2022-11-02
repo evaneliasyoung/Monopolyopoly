@@ -13,8 +13,6 @@ public class CameraController : MonoBehaviour
     public Vector3 reverseOffset;
     public Vector3 angle;
     public Vector3 reverseAngle;
-
-    private int currentPlayer = 0;
     public GameObject mainCamera;
     public GameObject gameController;
 
@@ -49,6 +47,9 @@ public class CameraController : MonoBehaviour
     }
     */
 
+    /// <summary>
+    /// Tells camera to look at cards
+    /// </summary>
     public void FocusCard()
     {
         playerFocus = false;
@@ -56,20 +57,32 @@ public class CameraController : MonoBehaviour
         mainCamera.transform.eulerAngles = new Vector3(10f, 90f, 0f);
     }
 
+    /// <summary>
+    /// Tells camera to look at dice
+    /// </summary>
+    public void FocusDice()
+    {
+        playerFocus = false;
+        mainCamera.transform.position = new Vector3(-9f, 3f, 0f);
+        mainCamera.transform.eulerAngles = new Vector3(35f, 90f, 0f);
+    }
+
+    /// <summary>
+    /// Tells camera to look at currentPlayer
+    /// </summary>
     public void FocusPlayer()
     {
         playerFocus = true;
     }
 
+    /// <summary>
+    /// Tells camera which player to focus
+    /// </summary>
+    /// <param name="player">PlayerObj of current player</param>
     public void TargetPlayer(PlayerObj player)
     {
         //currentPlayer = player;
         piece = player;
-    }
-
-    public void SetPlayers(List<PlayerObj> players)
-    {
-        pieces = players;
     }
 
     // Start is called before the first frame update
@@ -107,6 +120,7 @@ public class CameraController : MonoBehaviour
         }
         */
 
+        //only follows player if playerFocus is true
         if (playerFocus)
         {
             Vector3 piecePos = piece.transform.position;
