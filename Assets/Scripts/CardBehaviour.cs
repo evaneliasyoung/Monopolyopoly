@@ -13,7 +13,7 @@ public class CardBehaviour : MonoBehaviour
     // most recent cards drawn
     public GameObject mostRecentCardDrawn;
     public string mostRecentCardDrawnName;
-    public GameObject okButton;
+    //public GameObject okButton;
     
       
     
@@ -35,7 +35,7 @@ public class CardBehaviour : MonoBehaviour
         Shuffle("community");
         Shuffle("chance");
 
-        okButton.SetActive(false);
+        //okButton.SetActive(false);
         
         //DrawAndShowCard("chance");
         //Debug.Log(mostRecentCardDrawnName);
@@ -73,7 +73,7 @@ public class CardBehaviour : MonoBehaviour
         mostRecentCardDrawn = removedCard;
         mostRecentCardDrawnName = removedCard.name;
 
-        okButton.SetActive(true);
+        //okButton.SetActive(true);
     }
     
     
@@ -87,7 +87,7 @@ public class CardBehaviour : MonoBehaviour
         cardTrans.position = new Vector3(cardTrans.position.x, cardTrans.position.y-100, cardTrans.position.x);
         cardTrans.rotation = standardCardRotation;
         
-        okButton.SetActive(false);
+        //okButton.SetActive(false);
 
         // check if deck is empty and shuffle if so!
         if(shuffledCommunityCards.Count == 0)
