@@ -10,6 +10,11 @@ public class CardBehaviour : MonoBehaviour
     public List<GameObject> unorderedChanceCards;
     // Used to show the card to the player
     public Transform playerCameraTrans;
+    // most recent cards drawn
+    public GameObject mostRecentCardDrawn;
+    public string mostRecentCardDrawnName;
+    public GameObject okButton;
+    
       
     
     // --------------- Private Vars -----------------------------------------------------------------------------------
@@ -18,14 +23,22 @@ public class CardBehaviour : MonoBehaviour
     // Used to hold the shuffled deck along with any pop operations
     private List<GameObject> shuffledCommunityCards;
     private List<GameObject> shuffledChanceCards;
+    private Quaternion standardCardRotation; 
     
     
     
     // --------------- Callable Member Functions ------------------------------------------------------------------------
     private void Start()
     {
+        standardCardRotation = unorderedCommunityCards[0].GetComponent<Transform>().rotation;
+        
         Shuffle("community");
         Shuffle("chance");
+
+        okButton.SetActive(false);
+        
+        //DrawAndShowCard("chance");
+        //Debug.Log(mostRecentCardDrawnName);
     }
 
     
@@ -33,7 +46,7 @@ public class CardBehaviour : MonoBehaviour
     // Draw a card from specified deck, show to camera, then set aside
     //      (if get out of jail card, use icon for UI)
     // TODO : Need to implement UI "OK" prompt then discard the card!
-    private void DrawAndShowCard(string deck)
+    public void DrawAndShowCard(string deck)
     {
         // copy reference
         List<GameObject> deckStack;
@@ -45,16 +58,10 @@ public class CardBehaviour : MonoBehaviour
         {
             deckStack = shuffledChanceCards;
         }
-            
+         
         // grab and pop a card off of the respective deck
         GameObject removedCard = deckStack[deckStack.Count - 1];
         deckStack.RemoveAt(deckStack.Count - 1);
-        
-        // check if deck is empty and shuffle if so!
-        if(deckStack.Count == 0)
-        {
-            Shuffle(deck);
-        }
  
         // pop off card of corect deck within unity visuals
         Transform remCardTrans = removedCard.GetComponent<Transform>();
@@ -63,9 +70,38 @@ public class CardBehaviour : MonoBehaviour
         // Show our card to the camera
         remCardTrans.LookAt(playerCameraTrans, -playerCameraTrans.up);
         
-        // now move to "under" the board! (discard?)
-        
+        mostRecentCardDrawn = removedCard;
+        mostRecentCardDrawnName = removedCard.name;
+
+        okButton.SetActive(true);
     }
+    
+    
+    // Should be called after player is done looking at card
+    // some sort of UI "OK" button must be clicked for this to be called
+    public void StopLookingAtCard()
+    {
+        // move the card that is not being looked at down
+        // it will be moved back when shuffle is called when no more cards remain!
+        Transform cardTrans = mostRecentCardDrawn.GetComponent<Transform>();
+        cardTrans.position = new Vector3(cardTrans.position.x, cardTrans.position.y-100, cardTrans.position.x);
+        cardTrans.rotation = standardCardRotation;
+        
+        okButton.SetActive(false);
+
+        // check if deck is empty and shuffle if so!
+        if(shuffledCommunityCards.Count == 0)
+        {
+            Shuffle("community");
+        }
+        if(shuffledChanceCards.Count == 0)
+        {
+            Shuffle("chance");
+        }
+
+    }
+    
+    
 
     
     
@@ -129,7 +165,7 @@ public class CardBehaviour : MonoBehaviour
             {
                 // get the transform for this card and use the offsets to put it in the correct deck pos
                 Transform thisCard = shuffledCommunityCards[i].GetComponent<Transform>();
-                thisCard.position = new Vector3(thisCard.position.x, offsets[i], thisCard.position.z);
+                thisCard.position = new Vector3(thisCard.position.x, offsets[i], 3f);
             }
         }
         else if(deck == "chance")
@@ -140,7 +176,7 @@ public class CardBehaviour : MonoBehaviour
             {
                 // get the transform for this card and use the offsets to put it in the correct deck pos
                 Transform thisCard = shuffledChanceCards[i].GetComponent<Transform>();
-                thisCard.position = new Vector3(thisCard.position.x, offsets[i], thisCard.position.z);
+                thisCard.position = new Vector3(thisCard.position.x, offsets[i], -3f);
             }
         }
         

@@ -1,19 +1,24 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerObj : MonoBehaviour
+/// <summary>
+/// Controls piece movement and holds player data
+/// </summary>
+public class PlayerObj : MonoBehaviour, IPropertyOwner
 {
+    public byte Index;
+    public int LiquidAssets;
+
+    public GameControllerSys gameController;
     public GameObject transforms;
     public GameObject piece;
+    public string playerName;
     private List<Transform> positions;
 
     private int targetSpace = 0;
     private int moveSpacesCount = 0;
     private bool directJump = false;
     private bool jumpCounter = false;
-
-    private int currentSpace = 0;
 
     private List<int> ignorePos = new List<int> { 41 };
     private int visitNum = 10;
@@ -33,38 +38,59 @@ public class PlayerObj : MonoBehaviour
 
     //whether the piece is in the middle of translating
     private bool moving = false;
-    private bool inJail = false;
 
+    private int currentSpace = 0;
+    public int CurrentSpace
+    {
+        get { return currentSpace; }
+    }
+    private bool inJail = false;
+    public bool InJail
+    {
+        get { return inJail; }
+    }
     private bool moveComplete = true;
+    public bool MoveComplete
+    {
+        get { return moveComplete; }
+    }
+    private bool bankrupt = false;
+    public bool Bankrupt
+    {
+        get { return bankrupt; }
+    }
 
     //Public variables to be modified and accessed
-    public int playerMoney = 500;
-    public int jailFreeCards = 0;
+    public bool IsAi { get; set; } = false;
+    public short PlayerMoney { get; set; } = 1500;
+    public int JailFreeCards { get; set; } = 0;
+    public int TurnsInJail { get; set; } = 0;
 
     //Public movement logic variables
-    public float moveTime = 0.3f;
-    public float jumpHeight = 1;
+    public float MoveTime { get; set; } = 0.3f;
+    public float JumpHeight { get; set; } = 1;
+
+    byte IWithIndex.Index { get { return playerNumber; } }
+    short ILiquidityProvider.LiquidAssets { get { return PlayerMoney; } set { PlayerMoney = value; } }
+
+    //defined in unity
+    public byte playerNumber;
     public Vector3 offset;
+    public Vector3 visitingOffset;
 
-    //Returns current space number
-    public int currentPos()
+    /// <summary>
+    /// Use when the player becomes bankrupt
+    /// </summary>
+    public void SetBankrupt()
     {
-        return currentSpace;
+        bankrupt = true;
+        piece.SetActive(false);
     }
 
-    //Returns true if the player is in jail
-    public bool getInJail()
-    {
-        return inJail;
-    }
 
-    //Returns true if the player is not moving
-    public bool isStopped()
-    {
-        return moveComplete;
-    }
-
-    //Sends the player to jail
+    /// <summary>
+    /// Sends piece to jail
+    /// </summary>
     public void goToJail()
     {
         inJail = true;
@@ -79,17 +105,22 @@ public class PlayerObj : MonoBehaviour
         sp1xz = new Vector2(sp1.x, sp1.z);
         sp2xz = new Vector2(sp2.x, sp2.z);
         moveVector = sp2xz - sp1xz;
-        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + jumpHeight;
+        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + JumpHeight;
         moving = true;
     }
 
-    //Takes the player out of jail and on to just visiting
+    /// <summary>
+    /// Send piece to just visiting
+    /// </summary>
     public void getOutOfJail()
     {
         directJumpTo(visitNum);
     }
 
-    //Moves the player directly to "space" in one jump
+    /// <summary>
+    /// Moves the player directly to "space" in one jump
+    /// </summary>
+    /// <param name="space">int of desired space</param>
     public void directJumpTo(int space)
     {
         //space = space - 1;
@@ -101,7 +132,10 @@ public class PlayerObj : MonoBehaviour
         targetSpace = space;
     }
 
-    //Moves the player to "space" and jumps on each space between
+    /// <summary>
+    /// Moves the player to "space" and jumps on each space between
+    /// </summary>
+    /// <param name="space">int of desired space</param>
     public void moveTo(int space)
     {
         //space = space - 1;
@@ -113,7 +147,22 @@ public class PlayerObj : MonoBehaviour
         targetSpace = space;
     }
 
-    //Moves the player a relative amount of spaces
+    /// <summary>
+    /// Moves the player directly "num" spaces ahead
+    /// </summary>
+    /// <param name="num">int of desired spaces forward</param>
+    public void directJumpSpaces(int num)
+    {
+        targetSpace = mod(currentSpace + num, spaces);
+
+        jumpCounter = false;
+        directJump = true;
+    }
+
+    /// <summary>
+    /// Moves the player a relative amount of spaces
+    /// </summary>
+    /// <param name="num">int of desired moves</param>
     public void moveSpaces(int num)
     {
         jumpCounter = true;
@@ -132,7 +181,11 @@ public class PlayerObj : MonoBehaviour
         //current space position
         sp1 = piece.transform.position;
         //next space position
-        sp2 = positions[nextSpace].position + offset;
+
+        if (nextSpace == 10)
+            sp2 = positions[nextSpace].position + visitingOffset;
+        else
+            sp2 = positions[nextSpace].position + offset;
 
         //current space x,z position
         sp1xz = new Vector2(sp1.x, sp1.z);
@@ -140,7 +193,7 @@ public class PlayerObj : MonoBehaviour
         sp2xz = new Vector2(sp2.x, sp2.z);
 
         moveVector = sp2xz - sp1xz;
-        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + jumpHeight;
+        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + JumpHeight;
         moving = true;
         return;
     }
@@ -149,7 +202,7 @@ public class PlayerObj : MonoBehaviour
     private void InterpolateMovement()
     {
         Vector3 pos = piece.transform.position;
-        Vector2 xzMovement = moveVector * Time.deltaTime / moveTime;
+        Vector2 xzMovement = moveVector * Time.deltaTime / MoveTime;
 
         //piece.transform.position = new Vector3(xzMovement.x, pos.y, xzMovement.y);
 
@@ -188,10 +241,12 @@ public class PlayerObj : MonoBehaviour
             moving = false;
         }
     }
-    
+
     //Start is called at the first frame
     void Start()
     {
+        piece = this.gameObject;
+        gameController = piece.GetComponentInParent<GameControllerSys>();
         positions = new List<Transform>(transforms.GetComponentsInChildren<Transform>());
         //remove parent
         positions.RemoveAt(0);
@@ -209,11 +264,6 @@ public class PlayerObj : MonoBehaviour
 
         spaces = positions.Count;
 
-        foreach (Transform i in positions)
-        {
-            Debug.Log(i.position);
-        }
-
         piece.transform.position = positions[0].position + offset;
     }
 
@@ -224,63 +274,87 @@ public class PlayerObj : MonoBehaviour
         if (!moving)
         {
             //relative movement
-            if (jumpCounter)
+            if (jumpCounter && moveSpacesCount != 0)
             {
-                if (moveSpacesCount != 0)
+                moveComplete = false;
+                if (moveSpacesCount > 0)
                 {
-                    moveComplete = false;
-                    if (moveSpacesCount > 0)
-                        nextSpace = (currentSpace + 1) % spaces;
-                    else if (moveSpacesCount < 0)
-                        nextSpace = mod((currentSpace - 1), spaces);
+                    nextSpace = (currentSpace + 1) % spaces;
+                    if (nextSpace == 0)
+                    {
+                        PlayerMoney += 200;
+                        //gameController.UpdateMoney();
+                    }
+                        
+                }
+                else if (moveSpacesCount < 0)
+                    nextSpace = mod((currentSpace - 1), spaces);
 
+                if (inJail)
+                {
+                    nextSpace = visitNum;
+                    inJail = false;
+                }
+
+                InitializeInterpolation();
+
+            }
+            //absolute movement
+            else if (!jumpCounter && currentSpace != targetSpace)
+            {
+                moveComplete = false;
+                //can be -1 for jail
+                if (targetSpace < -1 || targetSpace > spaces - 1)
+                    targetSpace = currentSpace;
+
+                if (directJump)
+                {
+                    nextSpace = targetSpace;
+                    inJail = false;
+                }
+                else
+                {
                     if (inJail)
                     {
                         nextSpace = visitNum;
                         inJail = false;
                     }
-
-                    InitializeInterpolation();
-                }
-                else
-                    moveComplete = true;
-            }
-            //absolute movement
-            else
-            {
-                if (currentSpace != targetSpace)
-                {
-                    moveComplete = false;
-                    //can be -1 for jail
-                    if (targetSpace < -1 || targetSpace > spaces - 1)
-                        targetSpace = currentSpace;
-
-                    if (directJump)
-                    {
-                        nextSpace = targetSpace;
-                        inJail = false;
-                    }
                     else
                     {
-                        if (inJail)
+                        nextSpace = (currentSpace + 1) % spaces;
+                        if (nextSpace == 0)
                         {
-                            nextSpace = visitNum;
-                            inJail = false;
+                            PlayerMoney += 200;
+                            //gameController.UpdateMoney();
                         }
-                        else
-                            nextSpace = (currentSpace + 1) % spaces;
                     }
-
-                    InitializeInterpolation();
+                        
                 }
-                else
-                    moveComplete = true;
+
+                InitializeInterpolation();
+
             }
         }
 
         if (moving)
         {
             InterpolateMovement();
+
+            //stopped moving right after
+            if (!moving)
+            {
+                if (jumpCounter && moveSpacesCount == 0)
+                {
+                    moveComplete = true;
+                    gameController.Stop();
+                }
+                else if (!jumpCounter && currentSpace == targetSpace)
+                {
+                    moveComplete = true;
+                    gameController.Stop();
+                }
+
+            }
         }
 
     }
