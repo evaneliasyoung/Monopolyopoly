@@ -29,12 +29,10 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     private int spaces;
     //public Transform pos;
 
-    private Vector3 sp1;
-    private Vector3 sp2;
-    private Vector2 sp1xz;
-    private Vector2 sp2xz;
-    private Vector2 moveVector;
+    private Vector3 pos1;
+    private Vector3 pos2;
     private float parabolaHeight;
+    private float timePassed;
 
     //whether the piece is in the middle of translating
     private bool moving = false;
@@ -100,12 +98,10 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
         targetSpace = -1;
         nextSpace = -1;
 
-        sp1 = piece.transform.position;
-        sp2 = jail.position + offset;
-        sp1xz = new Vector2(sp1.x, sp1.z);
-        sp2xz = new Vector2(sp2.x, sp2.z);
-        moveVector = sp2xz - sp1xz;
-        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + JumpHeight;
+        timePassed = 0f;
+        pos1 = piece.transform.position;
+        pos2 = jail.position + offset;
+        parabolaHeight = Mathf.Max(pos1.y, pos2.y) + JumpHeight;
         moving = true;
     }
 
@@ -179,21 +175,15 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     private void InitializeInterpolation()
     {
         //current space position
-        sp1 = piece.transform.position;
+        pos1 = piece.transform.position;
         //next space position
 
         if (nextSpace == 10)
-            sp2 = positions[nextSpace].position + visitingOffset;
+            pos2 = positions[nextSpace].position + visitingOffset;
         else
-            sp2 = positions[nextSpace].position + offset;
+            pos2 = positions[nextSpace].position + offset;
 
-        //current space x,z position
-        sp1xz = new Vector2(sp1.x, sp1.z);
-        //next space x,z position
-        sp2xz = new Vector2(sp2.x, sp2.z);
-
-        moveVector = sp2xz - sp1xz;
-        parabolaHeight = Mathf.Max(sp1.y, sp2.y) + JumpHeight;
+        parabolaHeight = Mathf.Max(pos1.y, pos2.y) + JumpHeight;
         moving = true;
         return;
     }
@@ -201,36 +191,14 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     //Interpolates piece position per frame
     private void InterpolateMovement()
     {
-        Vector3 pos = piece.transform.position;
-        Vector2 xzMovement = moveVector * Time.deltaTime / MoveTime;
 
-        //piece.transform.position = new Vector3(xzMovement.x, pos.y, xzMovement.y);
+        timePassed += Time.deltaTime;
+        float progressNum = timePassed / MoveTime;
 
-        Vector2 progress = new Vector2(pos.x, pos.z) - sp1xz;
-
-        //0 to 1 porportion between sp1 and sp2
-        float progressNum = 1f - (moveVector.magnitude - progress.magnitude) / moveVector.magnitude;
-
-        //VERTICAL MOVEMENT
-        float multiplier = parabolaHeight;
-
-        //two different parabolas that meet in the middle
-        if (progressNum < 0.5f)
-            multiplier -= sp1.y;
-        else
-            multiplier -= sp2.y;
-
-        //modify input to shrink horizontally and make the vertex when progressNum = 0.5
-        float xmodify = 2f * progressNum - 1f;
-        float objectHeight = -(multiplier * xmodify * xmodify) + parabolaHeight;
-        //END VERTICAL MOVEMENT
-
-        piece.transform.position = new Vector3(xzMovement.x + pos.x, objectHeight, xzMovement.y + pos.z);
-
-        //movement is complete
         if (progressNum >= 1f)
         {
-            piece.transform.position = sp2;
+            timePassed = 0f;
+            piece.transform.position = pos2;
             currentSpace = nextSpace;
 
             if (moveSpacesCount > 0)
@@ -239,7 +207,25 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                 moveSpacesCount++;
 
             moving = false;
+            return;
         }
+
+        //VERTICAL MOVEMENT
+        float multiplier = parabolaHeight;
+
+        //two different parabolas that meet in the middle
+        if (progressNum < 0.5f)
+            multiplier -= pos1.y;
+        else
+            multiplier -= pos2.y;
+
+        //modify input to shrink horizontally and make the vertex when progressNum = 0.5
+        float xmodify = 2f * progressNum - 1f;
+        float objectHeight = -(multiplier * xmodify * xmodify) + parabolaHeight;
+
+        float xPos = pos2.x * progressNum + pos1.x * (1 - progressNum);
+        float zPos = pos2.z * progressNum + pos1.z * (1 - progressNum);
+        piece.transform.position = new Vector3(xPos, objectHeight, zPos);
     }
 
     //Start is called at the first frame

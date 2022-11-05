@@ -22,7 +22,7 @@ public class GameControllerSys : MonoBehaviour
     public CameraController cameraControl;
     public List<PlayerObj> pieces;
     public GameObject cards;
-    public diceParentScript diceScript;
+    public DiceParentScript diceScript;
     public PlayerObj CurrentPlayer
     {
         get { return currentPlayer; }
@@ -31,15 +31,7 @@ public class GameControllerSys : MonoBehaviour
     //private objects
     private TextMeshProUGUI moneyText;
     private CardBehaviour cardScript;
-
-    //button objects
-    //public GameObject passButton;
-    //public GameObject rollButton;
-    //public GameObject buyButton;
-    //public GameObject nextButton;
-    //public GameObject jailFreeButton;
     
-
     //private variables
     private int currentPlayerNum = 0;
     private PlayerObj currentPlayer;
@@ -112,14 +104,14 @@ public class GameControllerSys : MonoBehaviour
             case TileType.Chance:
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("chance");
-                descision.QueueDescision("next");
+                descision.QueueDescision("card");
                 state = "card";
                 return;
 
             case TileType.CommunityChest:
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("community");
-                descision.QueueDescision("next");
+                descision.QueueDescision("card");
                 state = "card";
                 return;
 
@@ -297,9 +289,8 @@ public class GameControllerSys : MonoBehaviour
     /// <param name="die2">value of 2nd die</param>
     public void RollDone()
     {
-        //nextButton.SetActive(true);
         state = "dice";
-        descision.QueueDescision("next");
+        descision.QueueDescision("dice");
     }
 
     /// <summary>

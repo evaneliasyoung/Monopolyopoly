@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class diceParentScript : MonoBehaviour
+public class DiceParentScript : MonoBehaviour
 {
     public GameObject dice1;
     public GameObject dice2;
@@ -12,8 +12,8 @@ public class diceParentScript : MonoBehaviour
     //public GameObject nextButton;
     //public GameObject rollButton;
 
-    public diceScript diceScript1;
-    public diceScript diceScript2;
+    public DiceScript diceScript1;
+    public DiceScript diceScript2;
 
     bool diceStopped1 = false;
     bool diceStopped2 = false;
@@ -110,8 +110,8 @@ public class diceParentScript : MonoBehaviour
     private void Start()
     {
         //nextButton.SetActive(false);
-        diceScript1 = dice1.GetComponent<diceScript>();
-        diceScript2 = dice2.GetComponent<diceScript>();
+        diceScript1 = dice1.GetComponent<DiceScript>();
+        diceScript2 = dice2.GetComponent<DiceScript>();
     }
 
     // Update is called once per frame

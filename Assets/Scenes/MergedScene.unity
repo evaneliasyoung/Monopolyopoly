@@ -2447,7 +2447,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0cef1caea67de742b27e01be9f7ae62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1225926828}
+  target: {fileID: 2023055495}
   variableName: playerName
   myText: {fileID: 335570276}
   textSize: 28
@@ -2473,7 +2473,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: bowtie
+  m_text: tommygun
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -3865,8 +3865,8 @@ Transform:
   m_Children:
   - {fileID: 1211599567}
   - {fileID: 17768057}
-  - {fileID: 1225926835}
   - {fileID: 2023055496}
+  - {fileID: 1225926835}
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3901,6 +3901,7 @@ MonoBehaviour:
   jailFreeButton: {fileID: 566751234}
   gameController: {fileID: 632658604}
   jailCost: 50
+  aiTimer: 0
   disQueue: []
 --- !u!1 &669871524
 GameObject:
@@ -5984,7 +5985,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 915908777890866685, guid: f7a61888696e4314aa074eb4c37c3bdf, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 915908777890866685, guid: f7a61888696e4314aa074eb4c37c3bdf, type: 3}
       propertyPath: m_LocalScale.x
@@ -8352,7 +8353,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0cef1caea67de742b27e01be9f7ae62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 2023055495}
+  target: {fileID: 1225926828}
   variableName: playerName
   myText: {fileID: 1097915065}
   textSize: 28
@@ -8378,7 +8379,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: tommygun
+  m_text: bowtie
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -10999,7 +11000,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0cef1caea67de742b27e01be9f7ae62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 2023055495}
+  target: {fileID: 1225926828}
   variableName: PlayerMoney
   myText: {fileID: 1462674808}
   textSize: 36
@@ -12878,7 +12879,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d0cef1caea67de742b27e01be9f7ae62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 1225926828}
+  target: {fileID: 2023055495}
   variableName: PlayerMoney
   myText: {fileID: 1670725153}
   textSize: 36
@@ -13089,7 +13090,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1840932465299048440, guid: 550736b0dbd3bb1408ab30cbb5cf52c7, type: 3}
       propertyPath: m_RootOrder
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 1840932465299048440, guid: 550736b0dbd3bb1408ab30cbb5cf52c7, type: 3}
       propertyPath: m_LocalScale.x
