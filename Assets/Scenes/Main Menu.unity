@@ -135,6 +135,7 @@ GameObject:
   - component: {fileID: 1259907}
   - component: {fileID: 1259906}
   - component: {fileID: 1259905}
+  - component: {fileID: 1259908}
   m_Layer: 5
   m_Name: Start Game
   m_TagString: Untagged
@@ -207,14 +208,14 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 102900000, guid: 5bec751bbb6cd1e4b8566a93ce5f47e2, type: 3}
-        m_TargetAssemblyTypeName: UnityEngine.Object, UnityEngine
-        m_MethodName: 
-        m_Mode: 1
+      - m_Target: {fileID: 1259908}
+        m_TargetAssemblyTypeName: StartGame, Assembly-CSharp
+        m_MethodName: BtnNewScene
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
@@ -257,6 +258,18 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1259903}
   m_CullTransparentMesh: 1
+--- !u!114 &1259908
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1259903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 602e4eda54d17f047b0843622d29ee17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4004823
 GameObject:
   m_ObjectHideFlags: 0
@@ -3542,6 +3555,7 @@ GameObject:
   - component: {fileID: 1484707413}
   - component: {fileID: 1484707412}
   - component: {fileID: 1484707414}
+  - component: {fileID: 1484707415}
   m_Layer: 5
   m_Name: Start Game
   m_TagString: Untagged
@@ -3710,18 +3724,30 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 970692735}
-        m_TargetAssemblyTypeName: MenuController, Assembly-CSharp
-        m_MethodName: NewGameDialogYes
-        m_Mode: 1
+      - m_Target: {fileID: 1484707415}
+        m_TargetAssemblyTypeName: StartGame, Assembly-CSharp
+        m_MethodName: BtnNewScene
+        m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
+          m_IntArgument: 1
           m_FloatArgument: 0
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &1484707415
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1484707410}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 602e4eda54d17f047b0843622d29ee17, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1496261028
 GameObject:
   m_ObjectHideFlags: 0
