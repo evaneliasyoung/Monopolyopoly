@@ -29,8 +29,8 @@ public class ShowOwned : MonoBehaviour
 			lastUpdateTime = 0;
             
             owner = target.GetComponent<Bank>().GetPropertyOwnerByIndex(space);
-            Debug.Log("Player: " + player);
-            Debug.Log("Owner: " + owner);
+            // Debug.Log("Player: " + player);
+            // Debug.Log("Owner: " + owner);
             if(player == owner){
                 image.sprite = propertyColor;
             }
