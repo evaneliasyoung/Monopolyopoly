@@ -99,8 +99,10 @@ public class GameControllerSys : MonoBehaviour
             case TileType.Property:
                 //Debug.Log("property");
 
+                Property tempProp = bank.GetPropertyByIndex(currentSpace);
+
                 //property is available. player can buy
-                if (bank.OwnerCanPurchaseProperty(currentPlayer, currentSpace))
+                if (tempProp.IsForSale)
                 {
                     //player has the money
                     if (currentPlayer.PlayerMoney >= bank.GetPropertyCostByIndex(currentSpace))
@@ -299,7 +301,7 @@ public class GameControllerSys : MonoBehaviour
         if(instantMoves)
         {
             if (currentPlayer.CurrentSpace + die1 + die2 > 39)
-                currentPlayer.PlayerMoney += 200;
+                currentPlayer.PlayerMoney += 20;
             currentPlayer.directJumpSpaces(die1 + die2);
         }  
         else
@@ -497,16 +499,24 @@ public class GameControllerSys : MonoBehaviour
         byte? owner;
         for (byte i = 0; i < 40; i++)
         {
-            owner = bank.GetPropertyOwnerByIndex(i);
-            if (owner == currentPlayer.playerNumber)
+
+            byte currentSpace = (byte)currentPlayer.CurrentSpace;
+            TileSpace test = new TileSpace(currentSpace);
+
+            if (test.TileType == TileType.Property)
             {
-                if (currentPlayer.lastPayed == -1)
+
+                owner = bank.GetPropertyOwnerByIndex(i);
+                if (owner == currentPlayer.playerNumber)
                 {
-                    bank.Properties[i].Owner = null;
-                }
-                else
-                {
-                    bank.Properties[i].Owner = (byte)currentPlayer.lastPayed;
+                    if (currentPlayer.lastPayed == -1)
+                    {
+                        bank.Properties[i].Owner = null;
+                    }
+                    else
+                    {
+                        bank.Properties[i].Owner = (byte)currentPlayer.lastPayed;
+                    }
                 }
             }
         }
