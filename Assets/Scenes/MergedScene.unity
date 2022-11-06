@@ -295,6 +295,7 @@ MonoBehaviour:
   transforms: {fileID: 1824611483}
   piece: {fileID: 17768053}
   playerName: Money Bag
+  lastPayed: -1
   playerNumber: 0
   offset: {x: 0.3, y: 0.07, z: -0.1}
   visitingOffset: {x: 0.06, y: 0.07, z: -0.4}
@@ -8923,6 +8924,11 @@ MonoBehaviour:
   - {fileID: 1211599564}
   - {fileID: 2023055497}
   - {fileID: 1225926832}
+  playerPortraits:
+  - {fileID: 1058002412}
+  - {fileID: 313496941}
+  - {fileID: 106844939}
+  - {fileID: 1773802769}
   cards: {fileID: 225095823}
   diceScript: {fileID: 542925055}
 --- !u!4 &632658605
@@ -14546,6 +14552,7 @@ MonoBehaviour:
   transforms: {fileID: 1824611483}
   piece: {fileID: 1211599560}
   playerName: Crowbar
+  lastPayed: -1
   playerNumber: 1
   offset: {x: 0.1, y: 0.35, z: -0.5}
   visitingOffset: {x: 0, y: 0.35, z: -0.9}
@@ -14577,6 +14584,7 @@ MonoBehaviour:
   transforms: {fileID: 1824611483}
   piece: {fileID: 1225926828}
   playerName: Bowtie
+  lastPayed: -1
   playerNumber: 3
   offset: {x: -0.3, y: 0, z: -0.2}
   visitingOffset: {x: -1, y: 0, z: 0.05}
@@ -22707,6 +22715,7 @@ MonoBehaviour:
   transforms: {fileID: 1824611483}
   piece: {fileID: 2023055495}
   playerName: Tommy Gun
+  lastPayed: -1
   playerNumber: 2
   offset: {x: 0, y: 0.13, z: 0.5}
   visitingOffset: {x: -0.15, y: 0.13, z: 0.3}
