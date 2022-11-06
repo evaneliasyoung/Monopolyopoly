@@ -21,6 +21,7 @@ public class GameControllerSys : MonoBehaviour
     public GameObject mainCamera;
     public CameraController cameraControl;
     public List<PlayerObj> pieces;
+    public List<GameObject> playerPortraits;
     public GameObject cards;
     public DiceParentScript diceScript;
     public PlayerObj CurrentPlayer
@@ -39,7 +40,8 @@ public class GameControllerSys : MonoBehaviour
     private int doubleCount = 0;
 
     private string state = "start";
-    private int lastPayed = -1;
+
+    
     //public List<string> disQueue = new List<string>();
 
     /// <summary>
@@ -114,7 +116,9 @@ public class GameControllerSys : MonoBehaviour
                     short cost = (short)bank.GetTileRentByIndex(currentSpace, currentPlayer);
 
                     currentPlayer.PlayerMoney -= cost;
-                    pieces[(int)bank.GetPropertyOwnerByIndex(currentSpace)].PlayerMoney += cost;
+                    int owner = (int)bank.GetPropertyOwnerByIndex(currentSpace);
+                    currentPlayer.lastPayed = owner;
+                    pieces[owner].PlayerMoney += cost;
                 }
                 break;
 
@@ -142,6 +146,7 @@ public class GameControllerSys : MonoBehaviour
 
             case TileType.Tax:
                 currentPlayer.PlayerMoney -= (short)bank.GetTileRentByIndex(currentSpace, currentPlayer);
+                currentPlayer.lastPayed = -1;
                 break;
 
             //corner is usually nothing
@@ -170,6 +175,7 @@ public class GameControllerSys : MonoBehaviour
         if (currentPlayer.InJail)
         {
             currentPlayer.PlayerMoney -= jailCost;
+            currentPlayer.lastPayed = -1;
             currentPlayer.getOutOfJail();
             currentPlayer.TurnsInJail = 0;
             descision.QueueDescision("pass");
@@ -278,6 +284,7 @@ public class GameControllerSys : MonoBehaviour
                     currentPlayer.getOutOfJail();
                     currentPlayer.TurnsInJail = 0;
                     currentPlayer.PlayerMoney -= jailCost;
+                    currentPlayer.lastPayed = -1;
                 }
                 else
                 {
@@ -442,6 +449,7 @@ public class GameControllerSys : MonoBehaviour
 
             case "community2":
                 currentPlayer.PlayerMoney -= 100;
+                currentPlayer.lastPayed = -1;
                 unmoved = true;
                 break;
 
@@ -456,6 +464,7 @@ public class GameControllerSys : MonoBehaviour
                     if (!player.Bankrupt)
                     {
                         player.PlayerMoney -= 10;
+                        player.lastPayed = currentPlayer.playerNumber;
                         currentPlayer.PlayerMoney += 10;
                     }
                 }
@@ -464,6 +473,7 @@ public class GameControllerSys : MonoBehaviour
 
             case "community5":
                 currentPlayer.PlayerMoney -= 50;
+                currentPlayer.lastPayed = -1;
                 unmoved = true;
                 break;
 
@@ -482,6 +492,27 @@ public class GameControllerSys : MonoBehaviour
         
     }
 
+    private void Bankrupt(PlayerObj currentPlayer)
+    {
+        byte? owner;
+        for (byte i = 0; i < 40; i++)
+        {
+            owner = bank.GetPropertyOwnerByIndex(i);
+            if (owner == currentPlayer.playerNumber)
+            {
+                if (currentPlayer.lastPayed == -1)
+                {
+                    bank.Properties[i].Owner = null;
+                }
+                else
+                {
+                    bank.Properties[i].Owner = (byte)currentPlayer.lastPayed;
+                }
+            }
+        }
+        currentPlayer.SetBankrupt();
+    }
+
     /// <summary>
     /// Player is done with their turn, called by Pass button
     /// </summary>
@@ -490,10 +521,13 @@ public class GameControllerSys : MonoBehaviour
         SoundManager.Instance.MiscSound("pass");
         descision.clearButtons();
 
+        if (currentPlayer.PlayerMoney < 0)
+            Bankrupt(currentPlayer);
+
         int activePlayers = 0;
         for (int i = 0; i < pieces.Count; i++)
         {
-            if (!pieces[currentPlayerNum].Bankrupt)
+            if (!pieces[i].Bankrupt)
                 activePlayers++;
         }
 
@@ -510,7 +544,14 @@ public class GameControllerSys : MonoBehaviour
             currentPlayer = pieces[currentPlayerNum];
             if(!currentPlayer.Bankrupt)
             {
-                break;
+                if(currentPlayer.PlayerMoney < 0)
+                {
+                    Bankrupt(currentPlayer);
+                }
+                else
+                {
+                    break;
+                }
             }
         }
 
@@ -549,6 +590,8 @@ public class GameControllerSys : MonoBehaviour
         currentPlayer = pieces[currentPlayerNum];
         cameraControl.TargetPlayer(currentPlayer);
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
+
+
 
         pieces[0].IsAi = InitializeGame.Player1AI;
         pieces[1].IsAi = InitializeGame.Player2AI;
