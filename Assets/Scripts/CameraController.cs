@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CameraController : MonoBehaviour
 {
-    private bool playerFocus = true;
+    private bool playerFocus = false;
 
 
     public List<PlayerObj> pieces;

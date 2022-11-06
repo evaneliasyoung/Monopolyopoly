@@ -8,6 +8,8 @@ using TMPro;
 /// </summary>
 public class GameControllerSys : MonoBehaviour
 {
+    public short goMoney = 20;
+
     //public variables
     public short jailCost = 50;
     public float moveTime = 0.5f;
@@ -42,7 +44,6 @@ public class GameControllerSys : MonoBehaviour
     private string state = "start";
 
     
-    //public List<string> disQueue = new List<string>();
 
     /// <summary>
     /// Get PlayerObj by index
@@ -99,8 +100,10 @@ public class GameControllerSys : MonoBehaviour
             case TileType.Property:
                 //Debug.Log("property");
 
+                Property tempProp = bank.GetPropertyByIndex(currentSpace);
+
                 //property is available. player can buy
-                if (bank.OwnerCanPurchaseProperty(currentPlayer, currentSpace))
+                if (tempProp.IsForSale)
                 {
                     //player has the money
                     if (currentPlayer.PlayerMoney >= bank.GetPropertyCostByIndex(currentSpace))
@@ -299,7 +302,7 @@ public class GameControllerSys : MonoBehaviour
         if(instantMoves)
         {
             if (currentPlayer.CurrentSpace + die1 + die2 > 39)
-                currentPlayer.PlayerMoney += 200;
+                currentPlayer.PlayerMoney += goMoney;
             currentPlayer.directJumpSpaces(die1 + die2);
         }  
         else
@@ -381,7 +384,7 @@ public class GameControllerSys : MonoBehaviour
             case "chance2": //go to "go"
                 if (instantMoves)
                 {
-                    currentPlayer.PlayerMoney += 200;
+                    currentPlayer.PlayerMoney += goMoney;
                     currentPlayer.directJumpTo(0);
                 }
                 else
@@ -399,7 +402,7 @@ public class GameControllerSys : MonoBehaviour
                 if (instantMoves)
                 {
                     if (currentPlayer.CurrentSpace > 1)
-                        currentPlayer.PlayerMoney += 200;
+                        currentPlayer.PlayerMoney += goMoney;
                     currentPlayer.directJumpTo(1);
                 }
                 else
@@ -412,7 +415,7 @@ public class GameControllerSys : MonoBehaviour
                 {
                     if (instantMoves)
                     {
-                        currentPlayer.PlayerMoney += 200;
+                        currentPlayer.PlayerMoney += goMoney;
                         currentPlayer.directJumpTo(12);
                     }
                     else
@@ -492,21 +495,32 @@ public class GameControllerSys : MonoBehaviour
         
     }
 
+    private void Bankrupt(PlayerObj player, int lastPayed)
+    {
+        player.SetBankrupt();
+    }
+
     private void Bankrupt(PlayerObj currentPlayer)
     {
         byte? owner;
         for (byte i = 0; i < 40; i++)
         {
-            owner = bank.GetPropertyOwnerByIndex(i);
-            if (owner == currentPlayer.playerNumber)
+            TileSpace test = new TileSpace(i);
+
+            if (test.TileType == TileType.Property)
             {
-                if (currentPlayer.lastPayed == -1)
+
+                owner = bank.GetPropertyOwnerByIndex(i);
+                if (owner == currentPlayer.playerNumber)
                 {
-                    bank.Properties[i].Owner = null;
-                }
-                else
-                {
-                    bank.Properties[i].Owner = (byte)currentPlayer.lastPayed;
+                    if (currentPlayer.lastPayed == -1)
+                    {
+                        bank.GetPropertyByIndex(i).Owner = null;
+                    }
+                    else
+                    {
+                        bank.GetPropertyByIndex(i).Owner = (byte)currentPlayer.lastPayed;
+                    }
                 }
             }
         }
@@ -516,8 +530,15 @@ public class GameControllerSys : MonoBehaviour
     /// <summary>
     /// Player is done with their turn, called by Pass button
     /// </summary>
+    /// 
     public void Pass()
     {
+        //check if player bankrupt
+        if (currentPlayer.PlayerMoney < 0)
+        {
+            Bankrupt(currentPlayer);
+        }
+
         SoundManager.Instance.MiscSound("pass");
         descision.clearButtons();
 
@@ -535,6 +556,18 @@ public class GameControllerSys : MonoBehaviour
         {
             descision.clearButtons();
             Debug.Log("GAME OVER");
+
+
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                if (!pieces[i].Bankrupt)
+                {
+                    cameraControl.TargetPlayer(pieces[i]);
+                }
+                    
+            }
+            
+
             return;
         }
 
@@ -619,17 +652,27 @@ public class GameControllerSys : MonoBehaviour
             playerPortraits[i].SetActive(false);
         }
 
-        currentPlayerNum = currentPlayer.playerNumber;
-        cameraControl.TargetPlayer(currentPlayer);
-        moneyText.SetText("$" + currentPlayer.PlayerMoney);
+        if (currentPlayer != null)
+        {
+            currentPlayerNum = currentPlayer.playerNumber;
+            cameraControl.FocusPlayer();
+            cameraControl.TargetPlayer(currentPlayer);
+            moveTime = InitializeGame.GameSpeed;
+            instantMoves = InitializeGame.Quickplay;
 
-        moveTime = InitializeGame.GameSpeed;
-        instantMoves = InitializeGame.Quickplay;
+            descision.CurrentPlayer = currentPlayer;
+            //set buttons
+            descision.clearButtons();
+            descision.QueueDescision("new turn");
+        }
+        else
+        {
+            descision.clearButtons();
+            cameraControl.FocusDice();
+        }
+        
 
-        descision.CurrentPlayer = currentPlayer;
-        //set buttons
-        descision.clearButtons();
-        descision.QueueDescision("new turn");
+        
     }
 
     // Update is called once per frame
