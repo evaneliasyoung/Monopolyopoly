@@ -39,6 +39,7 @@ public class GameControllerSys : MonoBehaviour
     private int doubleCount = 0;
 
     private string state = "start";
+    private int lastPayed = -1;
     //public List<string> disQueue = new List<string>();
 
     /// <summary>
