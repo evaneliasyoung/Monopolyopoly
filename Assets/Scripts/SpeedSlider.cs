@@ -1,10 +1,10 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.Audio;
 using UnityEngine.UI;
+using UnityEngine.Audio;
 
-public class SliderScript : MonoBehaviour
+public class SpeedSlider : MonoBehaviour
 {
     [SerializeField] private AudioSource _audio;
     [SerializeField] private Slider _slider;
