@@ -2,12 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class diceScript : MonoBehaviour
+public class DiceScript : MonoBehaviour
 {
     public GameObject dice;
     public Rigidbody dicePhys;
     public MeshRenderer diceRender;
-    public diceParentScript diceParent;
+    public DiceParentScript diceParent;
     public bool started = false;
     public Vector3 origin;
     public int diceNum;

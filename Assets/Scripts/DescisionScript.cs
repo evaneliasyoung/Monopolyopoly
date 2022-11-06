@@ -11,15 +11,29 @@ public class DescisionScript : MonoBehaviour
     public GameObject jailFreeButton;
     public GameControllerSys gameController;
     public int jailCost = 50;
+    public float aiTimer = 0f;
     public PlayerObj CurrentPlayer { get; set; }
     public List<string> disQueue = new List<string>();
 
     public void QueueDescision(string descision)
     {
-        Debug.Log(descision);
+        //Debug.Log(descision);
 
         if (CurrentPlayer.IsAi)
+        {
             disQueue.Add(descision);
+
+            switch (descision)
+            {
+                case "card":
+                    aiTimer = 2f;
+                    break;
+                default:
+                    aiTimer = 0.3f;
+                    break;
+            }
+        }
+            
         else
             GetDescision(descision);
     }
@@ -48,18 +62,28 @@ public class DescisionScript : MonoBehaviour
                 else
                     rollButton.SetActive(true);
                 break;
-            case "next":
+
+            case "dice":
                 if (CurrentPlayer.IsAi)
                     gameController.Next();
                 else
                     nextButton.SetActive(true);
                 break;
+
+            case "card":
+                if (CurrentPlayer.IsAi)
+                    gameController.Next();
+                else
+                    nextButton.SetActive(true);
+                break;
+
             case "pass":
                 if (CurrentPlayer.IsAi)
                     gameController.Pass();
                 else
                     passButton.SetActive(true);
                 break;
+
             case "buy":
                 if (CurrentPlayer.IsAi)
                     gameController.Buy();
@@ -98,11 +122,20 @@ public class DescisionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (disQueue.Count > 0)
+        //wait for aiTimer
+        if (aiTimer > 0f)
         {
-            Debug.Log("update: " + disQueue[0]);
-            GetDescision(disQueue[0]);
-            disQueue.RemoveAt(0);
+            aiTimer -= Time.deltaTime;
         }
+        else
+        {
+            if (disQueue.Count > 0)
+            {
+                Debug.Log("update: " + disQueue[0]);
+                GetDescision(disQueue[0]);
+                disQueue.RemoveAt(0);
+            }
+        }
+
     }
 }

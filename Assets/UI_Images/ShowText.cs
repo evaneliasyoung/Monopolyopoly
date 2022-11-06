@@ -18,16 +18,30 @@ public class ShowText : MonoBehaviour
 	public string preText = "";
 	public string textAllignment = "Center";
 
+	private GameControllerSys gameController;
+	private ActiveTurn parent;
+
 	/** Don't refresh at 60FPS; wasteful! */
 	private float updateNSeconds = 0.25f;
 	private float lastUpdateTime = 0f;
 
-	// Update is called once per frame
-	void Update ()
+    void Start()
+    {
+		parent = this.GetComponentInParent<ActiveTurn>();
+		gameController = parent.target.GetComponent<GameControllerSys>();
+		target = gameController.GetPlayer(parent.playerNum).gameObject;
+
+	}
+
+    // Update is called once per frame
+    void Update ()
 	{
 		lastUpdateTime += Time.deltaTime;
 		if (lastUpdateTime > updateNSeconds) {
 			lastUpdateTime = 0;
+
+			target = gameController.GetPlayer(parent.playerNum).gameObject;
+
 			if (myText == null) {
 				Debug.LogError ("Missing Text object, please disable this DisplayVariable component");
 			} else if (variableName == null || target == null) {
