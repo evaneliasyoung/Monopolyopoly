@@ -22,7 +22,7 @@ public class GameControllerSys : MonoBehaviour
     public CameraController cameraControl;
     public List<PlayerObj> pieces;
     public GameObject cards;
-    public diceParentScript diceScript;
+    public DiceParentScript diceScript;
     public PlayerObj CurrentPlayer
     {
         get { return currentPlayer; }
@@ -31,15 +31,7 @@ public class GameControllerSys : MonoBehaviour
     //private objects
     private TextMeshProUGUI moneyText;
     private CardBehaviour cardScript;
-
-    //button objects
-    //public GameObject passButton;
-    //public GameObject rollButton;
-    //public GameObject buyButton;
-    //public GameObject nextButton;
-    //public GameObject jailFreeButton;
     
-
     //private variables
     private int currentPlayerNum = 0;
     private PlayerObj currentPlayer;
@@ -48,6 +40,24 @@ public class GameControllerSys : MonoBehaviour
 
     private string state = "start";
     //public List<string> disQueue = new List<string>();
+
+    /// <summary>
+    /// Get PlayerObj by index
+    /// </summary>
+    /// <param name="playerNum">Index of player</param>
+    /// <returns></returns>
+    public PlayerObj GetPlayer(int playerNum)
+    {
+        foreach (PlayerObj player in pieces)
+        {
+            if (player.playerNumber == playerNum)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
 
     /// <summary>
     /// Called when PlayerObj lands on a space
@@ -112,14 +122,72 @@ public class GameControllerSys : MonoBehaviour
             case TileType.Chance:
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("chance");
-                descision.QueueDescision("next");
+                //SOUND HERE
+                string pulledCardChance = cardScript.mostRecentCardDrawnName;
+                switch (pulledCardChance)
+                {
+                    case "chance1": // Loan sharks
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance1, 0.5f);
+                        break;
+
+                    case "chance2": //Advance to Go 
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance2, 0.5f);
+                        break;
+
+                    case "chance3": //Green Door Brewery
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance3, 0.35f);
+                        break;
+
+                    case "chance4": //Carnello's Pizzaria
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance4, 0.4f);
+                        break;
+
+                    case "chance5": //Laundromat
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance5, 0.25f);
+                        break;
+
+                    case "chance6": //Go back 3 spaces
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance6, 0.4f);
+                        break;
+
+                }
+                descision.QueueDescision("card");
                 state = "card";
                 return;
 
             case TileType.CommunityChest:
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("community");
-                descision.QueueDescision("next");
+                //SOUND HERE
+                string pulledCardCommunity = cardScript.mostRecentCardDrawnName;
+                switch (pulledCardCommunity)
+                {
+                    case "community1":
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community1, 0.5f);
+                        break;
+
+                    case "community2":
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community2, 0.5f);
+                        break;
+
+                    case "community3":
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community3, 0.5f);
+                        break;
+
+                    case "community4":
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community4, 0.5f);
+                        break;
+
+                    case "community5":
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community5, 0.5f);
+                        break;
+
+                    case "community6":
+                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community6, 0.5f);
+                        break;
+
+                }
+                descision.QueueDescision("card");
                 state = "card";
                 return;
 
@@ -132,6 +200,7 @@ public class GameControllerSys : MonoBehaviour
                 //space 30 is the go to jail space
                 if (currentSpace == 30)
                 {
+                    SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.PrisonCell, 0.6f);
                     currentPlayer.goToJail();
                     return;
                 }
@@ -146,6 +215,8 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Buy()
     {
+        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.ButtonClick, 0.1f);
+        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.BuyButton, 0.8f);
         descision.clearButtons();
         if (currentPlayer.InJail)
         {
@@ -169,9 +240,6 @@ public class GameControllerSys : MonoBehaviour
 
         bank.PurchaseProperty(ref playa, currentSpace);
 
-        Debug.Log("playa: " + playa.LiquidAssets);
-        Debug.Log("player: " + currentPlayer.LiquidAssets);
-
         descision.QueueDescision("pass");
     }
 
@@ -188,6 +256,16 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Roll()
     {
+        int n = (int)(Random.value * 3f);
+        if (n == 0) {
+            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Roll1, 0.8f);
+        }
+        if (n == 1) {
+            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Roll2, 0.8f);
+        }
+        if (n == 2) {
+            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Roll3, 0.8f);
+        }
         descision.clearButtons();
 
         if (instantMoves)
@@ -218,6 +296,16 @@ public class GameControllerSys : MonoBehaviour
     }
 
     /// <summary>
+    /// When property button is clicked
+    /// </summary>
+    /// <param name="player">Player Num</param>
+    /// <param name="property">Property Num</param>
+    public void ClickedProperty(byte player, byte property)
+    {
+        Debug.Log("clicked player " + player + " property " + property);
+    }
+
+    /// <summary>
     /// Called when roll is complete. Rolls dice and moves piece
     /// </summary>
     public void MovePiece(int die1, int die2)
@@ -225,7 +313,7 @@ public class GameControllerSys : MonoBehaviour
         cameraControl.FocusPlayer();
         currentPlayer.MoveTime = moveTime;
 
-        Debug.Log("die1: " + die1 + " - die2: " + die2);
+        //Debug.Log("die1: " + die1 + " - die2: " + die2);
 
         if(currentPlayer.InJail == true)
         {
@@ -276,6 +364,7 @@ public class GameControllerSys : MonoBehaviour
             //speeding
             if (doubleCount >= 2)
             {
+                SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.PrisonCell, 0.6f);
                 currentPlayer.goToJail();
                 doubles = false;
                 doubleCount = 0;
@@ -297,9 +386,8 @@ public class GameControllerSys : MonoBehaviour
     /// <param name="die2">value of 2nd die</param>
     public void RollDone()
     {
-        //nextButton.SetActive(true);
         state = "dice";
-        descision.QueueDescision("next");
+        descision.QueueDescision("dice");
     }
 
     /// <summary>
@@ -307,6 +395,7 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Next()
     {
+        SoundManager.PlaySound(SoundManager.Sound.NextButton);
         //nextButton.SetActive(false);
         descision.clearButtons();
         switch (state)
@@ -333,7 +422,7 @@ public class GameControllerSys : MonoBehaviour
 
         string pulledCard = cardScript.mostRecentCardDrawnName;
 
-        Debug.Log(pulledCard);
+        //Debug.Log(pulledCard);
 
         switch (pulledCard)
         {
@@ -461,6 +550,7 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Pass()
     {
+        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.PassButtonClick, 0.8f);
         descision.clearButtons();
 
         int activePlayers = 0;
@@ -523,11 +613,10 @@ public class GameControllerSys : MonoBehaviour
         cameraControl.TargetPlayer(currentPlayer);
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
 
-        //pieces[0].IsAi = true;
-        pieces[0].IsAi = true;
-        pieces[1].IsAi = true;
-        pieces[2].IsAi = true;
-        pieces[3].IsAi = true;
+        // pieces[0].IsAi = true;
+        // pieces[1].IsAi = true;
+        // pieces[2].IsAi = true;
+        //pieces[3].IsAi = true;
 
         descision.CurrentPlayer = currentPlayer;
         //set buttons
