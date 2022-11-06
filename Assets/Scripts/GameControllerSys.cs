@@ -42,6 +42,24 @@ public class GameControllerSys : MonoBehaviour
     //public List<string> disQueue = new List<string>();
 
     /// <summary>
+    /// Get PlayerObj by index
+    /// </summary>
+    /// <param name="playerNum">Index of player</param>
+    /// <returns></returns>
+    public PlayerObj GetPlayer(int playerNum)
+    {
+        foreach (PlayerObj player in pieces)
+        {
+            if (player.playerNumber == playerNum)
+            {
+                return player;
+            }
+        }
+        return null;
+    }
+
+
+    /// <summary>
     /// Called when PlayerObj lands on a space
     /// </summary>
     public void Stop()
@@ -161,9 +179,6 @@ public class GameControllerSys : MonoBehaviour
 
         bank.PurchaseProperty(ref playa, currentSpace);
 
-        Debug.Log("playa: " + playa.LiquidAssets);
-        Debug.Log("player: " + currentPlayer.LiquidAssets);
-
         descision.QueueDescision("pass");
     }
 
@@ -210,6 +225,16 @@ public class GameControllerSys : MonoBehaviour
     }
 
     /// <summary>
+    /// When property button is clicked
+    /// </summary>
+    /// <param name="player">Player Num</param>
+    /// <param name="property">Property Num</param>
+    public void ClickedProperty(byte player, byte property)
+    {
+        Debug.Log("clicked player " + player + " property " + property);
+    }
+
+    /// <summary>
     /// Called when roll is complete. Rolls dice and moves piece
     /// </summary>
     public void MovePiece(int die1, int die2)
@@ -217,7 +242,7 @@ public class GameControllerSys : MonoBehaviour
         cameraControl.FocusPlayer();
         currentPlayer.MoveTime = moveTime;
 
-        Debug.Log("die1: " + die1 + " - die2: " + die2);
+        //Debug.Log("die1: " + die1 + " - die2: " + die2);
 
         if(currentPlayer.InJail == true)
         {
@@ -324,7 +349,7 @@ public class GameControllerSys : MonoBehaviour
 
         string pulledCard = cardScript.mostRecentCardDrawnName;
 
-        Debug.Log(pulledCard);
+        //Debug.Log(pulledCard);
 
         switch (pulledCard)
         {
@@ -514,11 +539,10 @@ public class GameControllerSys : MonoBehaviour
         cameraControl.TargetPlayer(currentPlayer);
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
 
-        //pieces[0].IsAi = true;
         pieces[0].IsAi = true;
         pieces[1].IsAi = true;
         pieces[2].IsAi = true;
-        pieces[3].IsAi = true;
+        //pieces[3].IsAi = true;
 
         descision.CurrentPlayer = currentPlayer;
         //set buttons
