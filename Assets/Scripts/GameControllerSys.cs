@@ -505,9 +505,7 @@ public class GameControllerSys : MonoBehaviour
         byte? owner;
         for (byte i = 0; i < 40; i++)
         {
-
-            byte currentSpace = (byte)currentPlayer.CurrentSpace;
-            TileSpace test = new TileSpace(currentSpace);
+            TileSpace test = new TileSpace(i);
 
             if (test.TileType == TileType.Property)
             {
@@ -517,11 +515,11 @@ public class GameControllerSys : MonoBehaviour
                 {
                     if (currentPlayer.lastPayed == -1)
                     {
-                        bank.Properties[i].Owner = null;
+                        bank.GetPropertyByIndex(i).Owner = null;
                     }
                     else
                     {
-                        bank.Properties[i].Owner = (byte)currentPlayer.lastPayed;
+                        bank.GetPropertyByIndex(i).Owner = (byte)currentPlayer.lastPayed;
                     }
                 }
             }
@@ -538,7 +536,7 @@ public class GameControllerSys : MonoBehaviour
         //check if player bankrupt
         if (currentPlayer.PlayerMoney < 0)
         {
-            Bankrupt(currentPlayer, lastPayed);
+            Bankrupt(currentPlayer);
         }
 
         SoundManager.Instance.MiscSound("pass");
@@ -558,6 +556,18 @@ public class GameControllerSys : MonoBehaviour
         {
             descision.clearButtons();
             Debug.Log("GAME OVER");
+
+
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                if (!pieces[i].Bankrupt)
+                {
+                    cameraControl.TargetPlayer(pieces[i]);
+                }
+                    
+            }
+            
+
             return;
         }
 
