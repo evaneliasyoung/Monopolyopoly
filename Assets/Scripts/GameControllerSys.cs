@@ -550,10 +550,13 @@ public class GameControllerSys : MonoBehaviour
         cameraControl.TargetPlayer(currentPlayer);
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
 
-        // pieces[0].IsAi = true;
-        // pieces[1].IsAi = true;
-        // pieces[2].IsAi = true;
-        //pieces[3].IsAi = true;
+        pieces[0].IsAi = InitializeGame.Player1AI;
+        pieces[1].IsAi = InitializeGame.Player2AI;
+        pieces[2].IsAi = InitializeGame.Player3AI;
+        pieces[3].IsAi = InitializeGame.Player4AI;
+
+        moveTime = InitializeGame.GameSpeed;
+        instantMoves = InitializeGame.Quickplay;
 
         descision.CurrentPlayer = currentPlayer;
         //set buttons
