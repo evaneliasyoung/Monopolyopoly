@@ -34,6 +34,9 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     private float parabolaHeight;
     private float timePassed;
 
+    //-1 for bank, other for player
+    public int lastPayed = -1;
+
     //whether the piece is in the middle of translating
     private bool moving = false;
 
