@@ -652,17 +652,27 @@ public class GameControllerSys : MonoBehaviour
             playerPortraits[i].SetActive(false);
         }
 
-        currentPlayerNum = currentPlayer.playerNumber;
-        cameraControl.TargetPlayer(currentPlayer);
-        moneyText.SetText("$" + currentPlayer.PlayerMoney);
+        if (currentPlayer != null)
+        {
+            currentPlayerNum = currentPlayer.playerNumber;
+            cameraControl.FocusPlayer();
+            cameraControl.TargetPlayer(currentPlayer);
+            moveTime = InitializeGame.GameSpeed;
+            instantMoves = InitializeGame.Quickplay;
 
-        moveTime = InitializeGame.GameSpeed;
-        instantMoves = InitializeGame.Quickplay;
+            descision.CurrentPlayer = currentPlayer;
+            //set buttons
+            descision.clearButtons();
+            descision.QueueDescision("new turn");
+        }
+        else
+        {
+            descision.clearButtons();
+            cameraControl.FocusDice();
+        }
+        
 
-        descision.CurrentPlayer = currentPlayer;
-        //set buttons
-        descision.clearButtons();
-        descision.QueueDescision("new turn");
+        
     }
 
     // Update is called once per frame
