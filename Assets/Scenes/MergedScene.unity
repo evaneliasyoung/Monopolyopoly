@@ -291,6 +291,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Index: 0
   LiquidAssets: 0
+  goMoney: 20
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
   piece: {fileID: 17768053}
@@ -8910,6 +8911,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2e5f308afa6ebf64cbaedb605b2c8284, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  goMoney: 20
   jailCost: 50
   moveTime: 0.2
   instantMoves: 0
@@ -11570,7 +11572,7 @@ MonoBehaviour:
   reverseOffset: {x: 0, y: 0, z: 0}
   angle: {x: 35, y: 135, z: 0}
   reverseAngle: {x: 0, y: 0, z: 0}
-  mainCamera: {fileID: 0}
+  mainCamera: {fileID: 963194225}
   gameController: {fileID: 632658603}
 --- !u!1 &971912463
 GameObject:
@@ -14548,6 +14550,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Index: 0
   LiquidAssets: 0
+  goMoney: 20
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
   piece: {fileID: 1211599560}
@@ -14580,6 +14583,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Index: 0
   LiquidAssets: 0
+  goMoney: 20
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
   piece: {fileID: 1225926828}
@@ -22711,6 +22715,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Index: 0
   LiquidAssets: 0
+  goMoney: 20
   gameController: {fileID: 0}
   transforms: {fileID: 1824611483}
   piece: {fileID: 2023055495}
