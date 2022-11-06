@@ -329,58 +329,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
             //stopped moving right after
             if (!moving)
             {
-                int n = (int)(Random.value * 3f);
-                //Piece Specific Movement Sounds
-                switch (playerNumber)
-                {
-                    
-                    case 0: //MoneyToken
-                        if (n == 0) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.MoneyBag1, 0.3f);
-                        }
-                        if (n == 1) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.MoneyBag2, 0.3f);
-                        } 
-                        if (n == 2){
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.MoneyBag3, 0.3f);
-                        }
-                        break;
-
-                    case 1: //CrowbarToken
-                        if (n == 0) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Crowbar1, 0.3f);
-                        }
-                        if (n == 1) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Crowbar2, 0.3f);
-                        } 
-                        if (n == 2) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Crowbar3, 0.3f);
-                        }
-                        break;
-                    case 2: //TommygunToken
-                        if (n == 0) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Tommygun1, 0.2f);
-                        }
-                        if (n == 1) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Tommygun2, 0.2f);
-                        } 
-                        if (n == 2) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Tommygun3, 0.2f);
-                        }
-                        break;
-
-                    case 3: //BowToken
-                        if (n == 0) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Bow1, 0.4f);
-                        }
-                        if (n == 1) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Bow2, 0.4f);
-                        } 
-                        if (n == 2) {
-                            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Bow3, 0.4f);
-                        }
-                        break;
-                }
+                SoundManager.Instance.PlayPlayerSound(playerNumber);
                 if (jumpCounter && moveSpacesCount == 0)
                 {
                     moveComplete = true;

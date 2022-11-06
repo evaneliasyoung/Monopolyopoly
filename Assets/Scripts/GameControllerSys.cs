@@ -115,42 +115,15 @@ public class GameControllerSys : MonoBehaviour
                     currentPlayer.PlayerMoney -= cost;
                     pieces[(int)bank.GetPropertyOwnerByIndex(currentSpace)].PlayerMoney += cost;
                 }
-                    
-                
                 break;
 
             case TileType.Chance:
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("chance");
-                //SOUND HERE
+
                 string pulledCardChance = cardScript.mostRecentCardDrawnName;
-                switch (pulledCardChance)
-                {
-                    case "chance1": // Loan sharks
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance1, 0.5f);
-                        break;
+                SoundManager.Instance.CommunitySound(pulledCardChance);
 
-                    case "chance2": //Advance to Go 
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance2, 0.5f);
-                        break;
-
-                    case "chance3": //Green Door Brewery
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance3, 0.35f);
-                        break;
-
-                    case "chance4": //Carnello's Pizzaria
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance4, 0.4f);
-                        break;
-
-                    case "chance5": //Laundromat
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance5, 0.25f);
-                        break;
-
-                    case "chance6": //Go back 3 spaces
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Chance6, 0.4f);
-                        break;
-
-                }
                 descision.QueueDescision("card");
                 state = "card";
                 return;
@@ -158,35 +131,10 @@ public class GameControllerSys : MonoBehaviour
             case TileType.CommunityChest:
                 cameraControl.FocusCard();
                 cardScript.DrawAndShowCard("community");
-                //SOUND HERE
+
                 string pulledCardCommunity = cardScript.mostRecentCardDrawnName;
-                switch (pulledCardCommunity)
-                {
-                    case "community1":
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community1, 0.5f);
-                        break;
+                SoundManager.Instance.CommunitySound(pulledCardCommunity);
 
-                    case "community2":
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community2, 0.5f);
-                        break;
-
-                    case "community3":
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community3, 0.5f);
-                        break;
-
-                    case "community4":
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community4, 0.5f);
-                        break;
-
-                    case "community5":
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community5, 0.5f);
-                        break;
-
-                    case "community6":
-                        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Community6, 0.5f);
-                        break;
-
-                }
                 descision.QueueDescision("card");
                 state = "card";
                 return;
@@ -200,7 +148,7 @@ public class GameControllerSys : MonoBehaviour
                 //space 30 is the go to jail space
                 if (currentSpace == 30)
                 {
-                    SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.PrisonCell, 0.6f);
+                    SoundManager.Instance.MiscSound("jail");
                     currentPlayer.goToJail();
                     return;
                 }
@@ -215,8 +163,8 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Buy()
     {
-        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.ButtonClick, 0.1f);
-        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.BuyButton, 0.8f);
+        SoundManager.Instance.MiscSound("buy");
+
         descision.clearButtons();
         if (currentPlayer.InJail)
         {
@@ -256,16 +204,7 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Roll()
     {
-        int n = (int)(Random.value * 3f);
-        if (n == 0) {
-            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Roll1, 0.8f);
-        }
-        if (n == 1) {
-            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Roll2, 0.8f);
-        }
-        if (n == 2) {
-            SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.Roll3, 0.8f);
-        }
+        SoundManager.Instance.MiscSound("roll");
         descision.clearButtons();
 
         if (instantMoves)
@@ -364,7 +303,7 @@ public class GameControllerSys : MonoBehaviour
             //speeding
             if (doubleCount >= 2)
             {
-                SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.PrisonCell, 0.6f);
+                SoundManager.Instance.MiscSound("jail");
                 currentPlayer.goToJail();
                 doubles = false;
                 doubleCount = 0;
@@ -395,7 +334,7 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Next()
     {
-        SoundManager.PlaySound(SoundManager.Sound.NextButton);
+        SoundManager.Instance.MiscSound("next");
         //nextButton.SetActive(false);
         descision.clearButtons();
         switch (state)
@@ -538,10 +477,7 @@ public class GameControllerSys : MonoBehaviour
         if (unmoved)
         {
             descision.QueueDescision("pass");
-            //passButton.SetActive(true);
         }
-
-        //passButton.SetActive(true);
         
     }
 
@@ -550,7 +486,7 @@ public class GameControllerSys : MonoBehaviour
     /// </summary>
     public void Pass()
     {
-        SoundManager.PlaySoundSpecificVolume(SoundManager.Sound.PassButtonClick, 0.8f);
+        SoundManager.Instance.MiscSound("pass");
         descision.clearButtons();
 
         int activePlayers = 0;
