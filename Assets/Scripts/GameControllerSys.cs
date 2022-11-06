@@ -44,7 +44,6 @@ public class GameControllerSys : MonoBehaviour
     private string state = "start";
 
     
-    //public List<string> disQueue = new List<string>();
 
     /// <summary>
     /// Get PlayerObj by index
@@ -496,6 +495,11 @@ public class GameControllerSys : MonoBehaviour
         
     }
 
+    private void Bankrupt(PlayerObj player, int lastPayed)
+    {
+        player.SetBankrupt();
+    }
+
     private void Bankrupt(PlayerObj currentPlayer)
     {
         byte? owner;
@@ -528,8 +532,15 @@ public class GameControllerSys : MonoBehaviour
     /// <summary>
     /// Player is done with their turn, called by Pass button
     /// </summary>
+    /// 
     public void Pass()
     {
+        //check if player bankrupt
+        if (currentPlayer.PlayerMoney < 0)
+        {
+            Bankrupt(currentPlayer, lastPayed);
+        }
+
         SoundManager.Instance.MiscSound("pass");
         descision.clearButtons();
 
