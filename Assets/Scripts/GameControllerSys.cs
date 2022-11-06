@@ -587,16 +587,41 @@ public class GameControllerSys : MonoBehaviour
 
         //use objects
         pieces.Sort((x, y) => x.playerNumber.CompareTo(y.playerNumber));
-        currentPlayer = pieces[currentPlayerNum];
+        int uiCount = 0;
+        currentPlayer = null;
+        for (int i = 0; i < pieces.Count; i++)
+        {
+            string playerState = InitializeGame.PlayerState[i];
+            if (playerState == "none")
+            {
+                pieces[i].SetBankrupt();
+            }
+            else if (playerState == "player")
+            {
+                if (currentPlayer == null)
+                    currentPlayer = pieces[i];
+                pieces[i].IsAi = false;
+                playerPortraits[uiCount].GetComponent<ActiveTurn>().playerNum = i;
+                uiCount++;
+            }
+            else if (playerState == "ai")
+            {
+                if (currentPlayer == null)
+                    currentPlayer = pieces[i];
+                pieces[i].IsAi = true;
+                playerPortraits[uiCount].GetComponent<ActiveTurn>().playerNum = i;
+                uiCount++;
+            }
+        }
+
+        for (int i = uiCount; i < pieces.Count; i++)
+        {
+            playerPortraits[i].SetActive(false);
+        }
+
+        currentPlayerNum = currentPlayer.playerNumber;
         cameraControl.TargetPlayer(currentPlayer);
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
-
-
-
-        pieces[0].IsAi = InitializeGame.Player1AI;
-        pieces[1].IsAi = InitializeGame.Player2AI;
-        pieces[2].IsAi = InitializeGame.Player3AI;
-        pieces[3].IsAi = InitializeGame.Player4AI;
 
         moveTime = InitializeGame.GameSpeed;
         instantMoves = InitializeGame.Quickplay;
