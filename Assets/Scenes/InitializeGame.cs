@@ -5,7 +5,7 @@ using UnityEngine;
 public class InitializeGame
 {
     public static int PlayerNum = 0;
-    public static float GameSpeed = 0.0f;
+    public static float GameSpeed = 0.2f;
     public static bool Quickplay = false;
     public static bool Player1AI = false;
     public static bool Player2AI = false;
