@@ -503,6 +503,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3739997820070034674, guid: 39a35282ecf807845bb8c0c930a0cd4e, type: 3}
+      propertyPath: m_audioClip
+      value: 
+      objectReference: {fileID: 8300000, guid: fd8273162dc528048a398a52b3aa6ecd, type: 3}
     - target: {fileID: 3739997820070034675, guid: 39a35282ecf807845bb8c0c930a0cd4e, type: 3}
       propertyPath: m_Name
       value: MusicControl
