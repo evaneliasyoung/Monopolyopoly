@@ -17,7 +17,7 @@ public class DescisionScript : MonoBehaviour
 
     public void QueueDescision(string descision)
     {
-        Debug.Log(descision);
+        //Debug.Log(descision);
 
         if (CurrentPlayer.IsAi)
         {
@@ -122,7 +122,6 @@ public class DescisionScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("aiTimer= " + aiTimer);
         //wait for aiTimer
         if (aiTimer > 0f)
         {
