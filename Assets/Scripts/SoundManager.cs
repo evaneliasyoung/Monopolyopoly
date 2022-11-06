@@ -202,4 +202,8 @@ public class SoundManager : MonoBehaviour
         Debug.LogError("Sound " + sound + " not found!"); 
         return null; 
     }
+
+    void Start() {
+        effectSource.volume = InitializeGame.GameVolume;
+    }
 }
