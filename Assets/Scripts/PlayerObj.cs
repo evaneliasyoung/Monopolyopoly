@@ -239,6 +239,9 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
         piece = this.gameObject;
         gameController = piece.GetComponentInParent<GameControllerSys>();
         positions = new List<Transform>(transforms.GetComponentsInChildren<Transform>());
+
+        goMoney = gameController.goMoney;
+
         //remove parent
         positions.RemoveAt(0);
 

@@ -8,6 +8,8 @@ using TMPro;
 /// </summary>
 public class GameControllerSys : MonoBehaviour
 {
+    public short goMoney = 20;
+
     //public variables
     public short jailCost = 50;
     public float moveTime = 0.5f;
@@ -301,7 +303,7 @@ public class GameControllerSys : MonoBehaviour
         if(instantMoves)
         {
             if (currentPlayer.CurrentSpace + die1 + die2 > 39)
-                currentPlayer.PlayerMoney += 20;
+                currentPlayer.PlayerMoney += goMoney;
             currentPlayer.directJumpSpaces(die1 + die2);
         }  
         else
@@ -383,7 +385,7 @@ public class GameControllerSys : MonoBehaviour
             case "chance2": //go to "go"
                 if (instantMoves)
                 {
-                    currentPlayer.PlayerMoney += 200;
+                    currentPlayer.PlayerMoney += goMoney;
                     currentPlayer.directJumpTo(0);
                 }
                 else
@@ -401,7 +403,7 @@ public class GameControllerSys : MonoBehaviour
                 if (instantMoves)
                 {
                     if (currentPlayer.CurrentSpace > 1)
-                        currentPlayer.PlayerMoney += 200;
+                        currentPlayer.PlayerMoney += goMoney;
                     currentPlayer.directJumpTo(1);
                 }
                 else
@@ -414,7 +416,7 @@ public class GameControllerSys : MonoBehaviour
                 {
                     if (instantMoves)
                     {
-                        currentPlayer.PlayerMoney += 200;
+                        currentPlayer.PlayerMoney += goMoney;
                         currentPlayer.directJumpTo(12);
                     }
                     else
