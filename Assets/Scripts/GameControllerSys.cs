@@ -623,16 +623,6 @@ public class GameControllerSys : MonoBehaviour
         cameraControl.TargetPlayer(currentPlayer);
         moneyText.SetText("$" + currentPlayer.PlayerMoney);
 
-<<<<<<< HEAD
-=======
-
-
-        pieces[0].IsAi = InitializeGame.Player1AI;
-        pieces[1].IsAi = InitializeGame.Player2AI;
-        pieces[2].IsAi = InitializeGame.Player3AI;
-        pieces[3].IsAi = InitializeGame.Player4AI;
-
->>>>>>> 46108f04ca67597c7397d8a09f0240379cf8f99d
         moveTime = InitializeGame.GameSpeed;
         instantMoves = InitializeGame.Quickplay;
 
