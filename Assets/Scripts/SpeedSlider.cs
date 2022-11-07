@@ -19,4 +19,9 @@ public class SpeedSlider : MonoBehaviour
         _audio.volume = _slider.value;
         InitializeGame.GameVolume = _slider.value;
     }
+
+    public void ChangeSpeed()
+    {
+        InitializeGame.GameSpeed = _slider.value;
+    }
 }

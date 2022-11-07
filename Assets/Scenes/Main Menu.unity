@@ -3914,7 +3914,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _audio: {fileID: 0}
-  _slider: {fileID: 0}
+  _slider: {fileID: 790980554}
 --- !u!1 &857840965
 GameObject:
   m_ObjectHideFlags: 0
@@ -6225,7 +6225,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: c196483d4bf56f24d883accba3037af3, type: 3}
   m_PlayOnAwake: 1
-  m_Volume: 0.103
+  m_Volume: 0.065
   m_Pitch: 1
   Loop: 0
   Mute: 0

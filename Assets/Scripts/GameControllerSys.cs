@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 /// <summary>
 /// Controls the whole Monopoly game
@@ -31,10 +32,14 @@ public class GameControllerSys : MonoBehaviour
         get { return currentPlayer; }
     }
 
+    public GameObject gameOver;
+    public AudioSource music;
+
     //private objects
     private TextMeshProUGUI moneyText;
     private CardBehaviour cardScript;
     
+
     //private variables
     private int currentPlayerNum = 0;
     private PlayerObj currentPlayer;
@@ -527,6 +532,34 @@ public class GameControllerSys : MonoBehaviour
         currentPlayer.SetBankrupt();
     }
 
+    bool GameOverCheck()
+    {
+        int activePlayers = 0;
+        for (int i = 0; i < pieces.Count; i++)
+        {
+            if (!pieces[i].Bankrupt)
+                activePlayers++;
+        }
+
+        if (activePlayers <= 1)
+        {
+            descision.clearButtons();
+            gameOver.SetActive(true);
+
+
+            for (int i = 0; i < pieces.Count; i++)
+            {
+                if (!pieces[i].Bankrupt)
+                {
+                    cameraControl.TargetPlayer(pieces[i]);
+                }
+
+            }
+            return true;
+        }
+        return false;
+    }
+
     /// <summary>
     /// Player is done with their turn, called by Pass button
     /// </summary>
@@ -552,22 +585,8 @@ public class GameControllerSys : MonoBehaviour
                 activePlayers++;
         }
 
-        if (activePlayers <= 1)
+        if (GameOverCheck())
         {
-            descision.clearButtons();
-            Debug.Log("GAME OVER");
-
-
-            for (int i = 0; i < pieces.Count; i++)
-            {
-                if (!pieces[i].Bankrupt)
-                {
-                    cameraControl.TargetPlayer(pieces[i]);
-                }
-                    
-            }
-            
-
             return;
         }
 
@@ -607,9 +626,23 @@ public class GameControllerSys : MonoBehaviour
         return currentPlayerNum;
     }
 
+    public void mainMenu()
+    {
+        GameObject musicObj = GameObject.Find("MusicControl");
+        music = musicObj.GetComponent<AudioSource>();
+
+
+        music.Stop();
+        SceneManager.LoadScene(0);
+    }
+
     // Start is called before the first frame update
     void Start()
     {
+        GameObject musicObj = GameObject.Find("MusicControl");
+        music = musicObj.GetComponent<AudioSource>();
+        music.Play();
+
         //set objects
         gameController = this.gameObject;
         cameraControl = mainCamera.GetComponent<CameraController>();
@@ -652,12 +685,19 @@ public class GameControllerSys : MonoBehaviour
             playerPortraits[i].SetActive(false);
         }
 
-        if (currentPlayer != null)
+        if (currentPlayer == null)
+        {
+            descision.clearButtons();
+            cameraControl.FocusDice();
+            gameOver.SetActive(true);
+        }
+        else if (!GameOverCheck())
         {
             currentPlayerNum = currentPlayer.playerNumber;
             cameraControl.FocusPlayer();
             cameraControl.TargetPlayer(currentPlayer);
             moveTime = InitializeGame.GameSpeed;
+            Debug.Log(moveTime);
             instantMoves = InitializeGame.Quickplay;
 
             descision.CurrentPlayer = currentPlayer;
@@ -665,13 +705,7 @@ public class GameControllerSys : MonoBehaviour
             descision.clearButtons();
             descision.QueueDescision("new turn");
         }
-        else
-        {
-            descision.clearButtons();
-            cameraControl.FocusDice();
-        }
         
-
         
     }
 
