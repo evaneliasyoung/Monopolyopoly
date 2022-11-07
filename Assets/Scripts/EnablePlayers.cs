@@ -10,22 +10,24 @@ public class EnablePlayers : MonoBehaviour
     // Start is called before the first frame update
     public void updatePlayer(int pid)
     {
-        switch(pid)
+        InitializeGame.ai[pid] = _toggle.isOn;
+
+        Debug.Log(pid + " " + _toggle.isOn);
+
+        bool active = InitializeGame.active[pid];
+        bool ai = InitializeGame.ai[pid];
+
+        if (!active)
         {
-            case 1:
-                InitializeGame.Player1AI = _toggle;
-                break;
-            case 2:
-                InitializeGame.Player2AI = _toggle;
-                break;
-            case 3:
-                InitializeGame.Player3AI = _toggle;
-                break;
-            case 4:
-                InitializeGame.Player4AI = _toggle;
-                break;
-            default:
-                break;
+            InitializeGame.PlayerState[pid] = "none";
+        }
+        else if (active && ai)//should be ai
+        {
+            InitializeGame.PlayerState[pid] = "ai";
+        }
+        else if (active && !ai)
+        {
+            InitializeGame.PlayerState[pid] = "player";
         }
     }
 

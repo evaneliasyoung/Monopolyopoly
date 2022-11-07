@@ -8,6 +8,7 @@ public class StartGame : MonoBehaviour
     // Start is called before the first frame update
     public void BtnNewScene(int sceneID)
     {
+        /*
         if(InitializeGame.Player1AI && InitializeGame.Player1Active)
         {
             InitializeGame.PlayerState[0] = "ai";
@@ -59,6 +60,10 @@ public class StartGame : MonoBehaviour
         {
             InitializeGame.PlayerState[3] = "none";
         }
+        */
+
+
+
         SceneManager.LoadScene(sceneID);
     }
 
