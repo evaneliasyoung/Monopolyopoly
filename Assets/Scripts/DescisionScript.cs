@@ -5,14 +5,14 @@ using TMPro;
 
 public class DescisionScript : MonoBehaviour
 {
-    public GameObject passButton;
-    public GameObject rollButton;
-    public GameObject buyButton;
-    public GameObject nextButton;
-    public GameObject jailFreeButton;
-    public GameObject increaseButton;
-    public GameObject decreaseButton;
-    public GameControllerSys gameController;
+    [SerializeField] private GameObject passButton;
+    [SerializeField] private GameObject rollButton;
+    [SerializeField] private GameObject buyButton;
+    [SerializeField] private GameObject nextButton;
+    [SerializeField] private GameObject jailFreeButton;
+    [SerializeField] private GameObject increaseButton;
+    [SerializeField] private GameObject decreaseButton;
+    [SerializeField] private GameControllerSys gameController;
     public int jailCost = 50;
     public float aiTimer = 0f;
     public PlayerObj CurrentPlayer { get; set; }

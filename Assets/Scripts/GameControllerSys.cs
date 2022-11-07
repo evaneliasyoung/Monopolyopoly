@@ -10,7 +10,7 @@ using UnityEngine.SceneManagement;
 public class GameControllerSys : MonoBehaviour
 {
     public short GoMoney { get; } = 200;
-
+    public HousingModel housingModel;
     //public variables
     public short jailCost = 50;
     public float moveTime = 0.5f;
@@ -19,7 +19,6 @@ public class GameControllerSys : MonoBehaviour
     //public objects
     public Bank bank;
     public DescisionScript descision;
-    public GameObject moneyIndicator;
     public GameObject gameController;
     public GameObject mainCamera;
     public CameraController cameraControl;
@@ -90,6 +89,7 @@ public class GameControllerSys : MonoBehaviour
         {
             bank.UnmortgageProperty(ref playa, prop);
         }
+        housingModel.UpdateHousing();
     }
 
     public void DecreaseProperty(byte prop)
@@ -118,6 +118,7 @@ public class GameControllerSys : MonoBehaviour
         {
             bank.MortgageProperty(ref playa, prop);
         }
+        housingModel.UpdateHousing();
     }
 
     /// <summary>
@@ -256,14 +257,6 @@ public class GameControllerSys : MonoBehaviour
         bank.PurchaseProperty(ref playa, currentSpace);
 
         descision.QueueDescision("pass");
-    }
-
-    /// <summary>
-    /// Called when the player's money changes
-    /// </summary>
-    public void UpdateMoney()
-    {
-        moneyText.SetText("$" + currentPlayer.PlayerMoney);
     }
 
     /// <summary>
@@ -696,7 +689,6 @@ public class GameControllerSys : MonoBehaviour
         gameController = this.gameObject;
         cameraControl = mainCamera.GetComponent<CameraController>();
         pieces = new List<PlayerObj>(gameController.GetComponentsInChildren<PlayerObj>());
-        moneyText = moneyIndicator.GetComponent<TextMeshProUGUI>();
         bank = gameController.GetComponent<Bank>();
         cardScript = cards.GetComponent<CardBehaviour>();
 
