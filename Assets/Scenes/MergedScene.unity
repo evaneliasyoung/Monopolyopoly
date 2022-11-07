@@ -532,6 +532,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 64c9cc107b2d4624795fd032d6d3c0d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  effectSource: {fileID: 31824943}
+--- !u!82 &31824943 stripped
+AudioSource:
+  m_CorrespondingSourceObject: {fileID: 3739997820070034674, guid: 39a35282ecf807845bb8c0c930a0cd4e, type: 3}
+  m_PrefabInstance: {fileID: 31824940}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &45471040
 GameObject:
   m_ObjectHideFlags: 0
