@@ -9,7 +9,7 @@ using UnityEngine.SceneManagement;
 /// </summary>
 public class GameControllerSys : MonoBehaviour
 {
-    public short goMoney = 20;
+    public short GoMoney { get; } = 200;
 
     //public variables
     public short jailCost = 50;
@@ -67,6 +67,58 @@ public class GameControllerSys : MonoBehaviour
         return null;
     }
 
+    public void IncreaseProperty(byte prop)
+    {
+        IPropertyOwner playa = (IPropertyOwner)currentPlayer;
+        descision.PropertyButtonClicked();
+        Debug.Log("increase " + prop);
+        Property tempProp = bank.GetPropertyByIndex(prop);
+        if (tempProp.PropertyType == PropertyTileType.Street)
+        {
+            Street tempStreet = bank.GetStreetByIndex(prop);
+
+            if (tempStreet.IsMortgaged)
+            {
+                bank.UnmortgageProperty(ref playa, prop);
+            }
+            else
+            {
+                bank.BuildResidence(ref playa, prop);
+            }
+        }
+        else
+        {
+            bank.UnmortgageProperty(ref playa, prop);
+        }
+    }
+
+    public void DecreaseProperty(byte prop)
+    {
+        IPropertyOwner playa = (IPropertyOwner)currentPlayer;
+        descision.PropertyButtonClicked();
+        Debug.Log("decrease " + prop);
+        Property tempProp = bank.GetPropertyByIndex(prop);
+        if (tempProp.PropertyType == PropertyTileType.Street)
+        {
+            Street tempStreet = bank.GetStreetByIndex(prop);
+            //has residence
+            if (tempStreet.Housing >= 1)
+            {
+                bool saveBool = bank.DemolishResidence(ref playa, prop);
+                Debug.Log(saveBool);
+            }
+            //does not have residence
+            else
+            {
+                bank.MortgageProperty(ref playa, prop);
+            }
+        }
+        //not a street
+        else
+        {
+            bank.MortgageProperty(ref playa, prop);
+        }
+    }
 
     /// <summary>
     /// Called when PlayerObj lands on a space
@@ -92,14 +144,11 @@ public class GameControllerSys : MonoBehaviour
             return;
         }
 
-        //tile number player landed on
         byte currentSpace = (byte)currentPlayer.CurrentSpace;
-
-        //tile type player landed on
-        TileSpace test = new TileSpace(currentSpace);
+        TileType type = GetTileType(currentSpace);
 
         //switch case for the type of tile landed on
-        switch (test.TileType)
+        switch (type)
         {
             //landed on a property
             case TileType.Property:
@@ -121,12 +170,15 @@ public class GameControllerSys : MonoBehaviour
                 else if (bank.GetPropertyOwnerByIndex(currentSpace) != currentPlayerNum)
                 {
                     Debug.Log("other prop");
-                    short cost = (short)bank.GetTileRentByIndex(currentSpace, currentPlayer);
-
-                    currentPlayer.PlayerMoney -= cost;
-                    int owner = (int)bank.GetPropertyOwnerByIndex(currentSpace);
-                    currentPlayer.lastPayed = owner;
-                    pieces[owner].PlayerMoney += cost;
+                    
+                    if (!tempProp.IsMortgaged)
+                    {
+                        short cost = (short)bank.GetTileRentByIndex(currentSpace, currentPlayer);
+                        currentPlayer.PlayerMoney -= cost;
+                        int owner = (int)tempProp.Owner;
+                        currentPlayer.lastPayed = owner;
+                        pieces[owner].PlayerMoney += cost;
+                    }
                 }
                 break;
 
@@ -249,14 +301,19 @@ public class GameControllerSys : MonoBehaviour
 
     }
 
+    public TileType GetTileType(byte tileNum)
+    {
+        TileSpace test = new TileSpace(tileNum);
+        return test.TileType;
+    }
+
     /// <summary>
     /// When property button is clicked
     /// </summary>
-    /// <param name="player">Player Num</param>
     /// <param name="property">Property Num</param>
-    public void ClickedProperty(byte player, byte property)
+    public void ClickedProperty(byte property)
     {
-        Debug.Log("clicked player " + player + " property " + property);
+        descision.PropertyClicked(property);
     }
 
     /// <summary>
@@ -307,7 +364,7 @@ public class GameControllerSys : MonoBehaviour
         if(instantMoves)
         {
             if (currentPlayer.CurrentSpace + die1 + die2 > 39)
-                currentPlayer.PlayerMoney += goMoney;
+                currentPlayer.PlayerMoney += GoMoney;
             currentPlayer.directJumpSpaces(die1 + die2);
         }  
         else
@@ -389,7 +446,7 @@ public class GameControllerSys : MonoBehaviour
             case "chance2": //go to "go"
                 if (instantMoves)
                 {
-                    currentPlayer.PlayerMoney += goMoney;
+                    currentPlayer.PlayerMoney += GoMoney;
                     currentPlayer.directJumpTo(0);
                 }
                 else
@@ -407,7 +464,7 @@ public class GameControllerSys : MonoBehaviour
                 if (instantMoves)
                 {
                     if (currentPlayer.CurrentSpace > 1)
-                        currentPlayer.PlayerMoney += goMoney;
+                        currentPlayer.PlayerMoney += GoMoney;
                     currentPlayer.directJumpTo(1);
                 }
                 else
@@ -420,7 +477,7 @@ public class GameControllerSys : MonoBehaviour
                 {
                     if (instantMoves)
                     {
-                        currentPlayer.PlayerMoney += goMoney;
+                        currentPlayer.PlayerMoney += GoMoney;
                         currentPlayer.directJumpTo(12);
                     }
                     else
@@ -500,21 +557,13 @@ public class GameControllerSys : MonoBehaviour
         
     }
 
-    private void Bankrupt(PlayerObj player, int lastPayed)
-    {
-        player.SetBankrupt();
-    }
-
     private void Bankrupt(PlayerObj currentPlayer)
     {
         byte? owner;
         for (byte i = 0; i < 40; i++)
         {
-            TileSpace test = new TileSpace(i);
-
-            if (test.TileType == TileType.Property)
+            if (GetTileType(i) == TileType.Property)
             {
-
                 owner = bank.GetPropertyOwnerByIndex(i);
                 if (owner == currentPlayer.playerNumber)
                 {

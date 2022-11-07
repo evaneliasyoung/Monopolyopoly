@@ -39,7 +39,7 @@ public class ShowOwned : MonoBehaviour
 
     public void OnClick()
     {
-        target.GetComponent<GameControllerSys>().ClickedProperty(player, space);
+        target.GetComponent<GameControllerSys>().ClickedProperty(space);
     }
 
 

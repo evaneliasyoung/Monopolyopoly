@@ -9,8 +9,6 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     public byte Index;
     public int LiquidAssets;
 
-    public short goMoney = 20;
-
     public GameControllerSys gameController;
     public GameObject transforms;
     public GameObject piece;
@@ -240,8 +238,6 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
         gameController = piece.GetComponentInParent<GameControllerSys>();
         positions = new List<Transform>(transforms.GetComponentsInChildren<Transform>());
 
-        goMoney = gameController.goMoney;
-
         //remove parent
         positions.RemoveAt(0);
 
@@ -276,7 +272,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                     nextSpace = (currentSpace + 1) % spaces;
                     if (nextSpace == 0)
                     {
-                        PlayerMoney += goMoney;
+                        PlayerMoney += gameController.GoMoney;
                         //gameController.UpdateMoney();
                     }
                         
@@ -318,7 +314,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
                         nextSpace = (currentSpace + 1) % spaces;
                         if (nextSpace == 0)
                         {
-                            PlayerMoney += goMoney;
+                            PlayerMoney += gameController.GoMoney;
                             //gameController.UpdateMoney();
                         }
                     }

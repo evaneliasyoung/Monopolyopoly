@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class DescisionScript : MonoBehaviour
 {
@@ -9,11 +10,119 @@ public class DescisionScript : MonoBehaviour
     public GameObject buyButton;
     public GameObject nextButton;
     public GameObject jailFreeButton;
+    public GameObject increaseButton;
+    public GameObject decreaseButton;
     public GameControllerSys gameController;
     public int jailCost = 50;
     public float aiTimer = 0f;
     public PlayerObj CurrentPlayer { get; set; }
     public List<string> disQueue = new List<string>();
+    Bank bank;
+
+    public void PropertyButtonClicked()
+    {
+        increaseButton.SetActive(false);
+        decreaseButton.SetActive(false);
+    }
+
+    /// <summary>
+    /// When property button is clicked
+    /// </summary>
+    /// <param name="player">Player Num</param>
+    /// <param name="property">Property Num</param>
+    public void PropertyClicked(byte property)
+    {
+        PropertyButtonClicked();
+
+        TextMeshProUGUI decreaseText = decreaseButton.GetComponentInChildren<TextMeshProUGUI>();
+        TextMeshProUGUI increaseText = increaseButton.GetComponentInChildren<TextMeshProUGUI>();
+        increaseButton.GetComponent<PropertyButtons>().property = property;
+        decreaseButton.GetComponent<PropertyButtons>().property = property;
+
+
+        Property tempProp = bank.GetPropertyByIndex(property);
+        //owner of the property
+        if (CurrentPlayer.playerNumber == tempProp.Owner)
+        {
+            //is street
+            if (tempProp.PropertyType == PropertyTileType.Street)
+            {
+                Street tempStreet = bank.GetStreetByIndex(property);
+
+                //hotel, can only downgrade
+                if (tempStreet.Hotels > 0)
+                {
+                    decreaseText.SetText("Sell Hotel");
+                    decreaseButton.SetActive(true);
+                }
+                //mortgaged, can unmortgage
+                else if (tempStreet.IsMortgaged)
+                {
+                    //needs to have the money
+                    if (CurrentPlayer.PlayerMoney >= tempStreet.UnmortgageCost)
+                    {
+                        increaseText.SetText("Unmortgage");
+                        increaseButton.SetActive(true);
+                    }
+                }
+                //default property
+                else if (tempStreet.Houses == 0)
+                {
+                    //needs to have the money
+                    if (CurrentPlayer.PlayerMoney >= tempStreet.BuildCost)
+                    {
+                        //needs to be monopolized
+                        if (bank.StreetIsMonopolized(tempStreet))
+                        {
+                            increaseText.SetText("Buy House");
+                            increaseButton.SetActive(true);
+                        }
+                    }
+                    decreaseText.SetText("Mortgage");
+                    decreaseButton.SetActive(true);
+                }
+                //one to four houses
+                else if (tempStreet.Houses > 0)
+                {
+                    decreaseText.SetText("Sell House");
+                    decreaseButton.SetActive(true);
+
+                    //needs to have the money
+                    if (CurrentPlayer.PlayerMoney >= tempStreet.BuildCost)
+                    {
+                        if (tempStreet.Houses > 3)
+                        {
+                            increaseText.SetText("Buy Hotel");
+                        }
+                        else
+                        {
+                            increaseText.SetText("Buy House");
+                        }
+                        increaseButton.SetActive(true);
+                    }
+                }
+            }
+            //is not street
+            else
+            {
+                if(tempProp.IsMortgaged)
+                {
+                    //need to have the money
+                    if (CurrentPlayer.PlayerMoney >= tempProp.UnmortgageCost)
+                    {
+                        increaseText.SetText("Unmortgage");
+                        increaseButton.SetActive(true);
+                    }
+                }
+                else
+                {
+                    decreaseText.SetText("Mortgage");
+                    decreaseButton.SetActive(true);
+                }
+            }
+        }
+        
+    }
 
     public void QueueDescision(string descision)
     {
@@ -45,7 +154,9 @@ public class DescisionScript : MonoBehaviour
         passButton.SetActive(false);
         rollButton.SetActive(false);
         jailFreeButton.SetActive(false);
-    }
+        increaseButton.SetActive(false);
+        decreaseButton.SetActive(false);
+}
 
     public void GetDescision(string descision)
     {
@@ -117,6 +228,7 @@ public class DescisionScript : MonoBehaviour
     void Start()
     {
         //nextButton.SetActive(true);
+        bank = gameController.bank;
     }
 
     // Update is called once per frame

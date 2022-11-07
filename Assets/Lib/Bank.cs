@@ -266,11 +266,11 @@ public class Bank : MonoBehaviour
     {
         if (Street.Owner == Owner.Index && !Street.IsMortgaged && Street.Housing < 5 && Owner.LiquidAssets >= Street.BuildCost)
         {
-            if (Street.Houses == 4 && Hotels > 0)
+            if (Street.Houses == 4) //&& Hotels > 0
             {
                 Hotels--;
             }
-            else if (Street.Houses < 4 && Houses > 0)
+            else if (Street.Houses < 4) //&& Houses > 0
             {
                 Houses--;
             }
