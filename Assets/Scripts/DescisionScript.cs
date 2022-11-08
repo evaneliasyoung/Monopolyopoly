@@ -42,7 +42,7 @@ public class DescisionScript : MonoBehaviour
 
         Property tempProp = bank.GetPropertyByIndex(property);
         //owner of the property
-        if (CurrentPlayer.playerNumber == tempProp.Owner)
+        if (CurrentPlayer.Index == tempProp.Owner)
         {
             //is street
             if (tempProp.PropertyType == PropertyTileType.Street)
@@ -132,13 +132,14 @@ public class DescisionScript : MonoBehaviour
         {
             disQueue.Add(descision);
 
+            //set ai timer
             switch (descision)
             {
                 case "card":
-                    aiTimer = 2f;
+                    aiTimer = 2f * gameController.moveTime * 2f;
                     break;
                 default:
-                    aiTimer = 0.3f;
+                    aiTimer = 0.3f * gameController.moveTime * 2f;
                     break;
             }
         }

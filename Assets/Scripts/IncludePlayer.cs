@@ -6,6 +6,12 @@ using UnityEngine.UI;
 public class IncludePlayer : MonoBehaviour
 {
     [SerializeField] private Toggle _toggle;
+    [SerializeField] private int index;
+
+    private void Start()
+    {
+        _toggle.isOn = InitializeGame.active[index];
+    }
 
     // Start is called before the first frame update
     public void updatePlayer(int pid)

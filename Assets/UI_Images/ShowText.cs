@@ -29,7 +29,7 @@ public class ShowText : MonoBehaviour
     {
 		parent = this.GetComponentInParent<ActiveTurn>();
 		gameController = parent.target.GetComponent<GameControllerSys>();
-		target = gameController.GetPlayer(parent.playerNum).gameObject;
+		target = gameController.GetPlayer(parent.Index).gameObject;
 
 	}
 
@@ -40,7 +40,7 @@ public class ShowText : MonoBehaviour
 		if (lastUpdateTime > updateNSeconds) {
 			lastUpdateTime = 0;
 
-			target = gameController.GetPlayer(parent.playerNum).gameObject;
+			target = gameController.GetPlayer(parent.Index).gameObject;
 
 			if (myText == null) {
 				Debug.LogError ("Missing Text object, please disable this DisplayVariable component");

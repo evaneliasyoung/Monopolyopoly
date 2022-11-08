@@ -20,7 +20,7 @@ public class InJail : MonoBehaviour
     {
         parent = this.GetComponent<ActiveTurn>();
         gameController = parent.target.GetComponent<GameControllerSys>();
-        target = gameController.GetPlayer(parent.playerNum).gameObject;
+        target = gameController.GetPlayer(parent.Index).gameObject;
 
         jailSprite.gameObject.SetActive(false);
         Update();
@@ -33,7 +33,7 @@ public class InJail : MonoBehaviour
 		if (lastUpdateTime > updateNSeconds) {
 			lastUpdateTime = 0;
 
-            target = gameController.GetPlayer(parent.playerNum).gameObject;
+            target = gameController.GetPlayer(parent.Index).gameObject;
 
             jailFreeCards = target.GetComponent<PlayerObj>().JailFreeCards;
             if(jailFreeCards != 0){

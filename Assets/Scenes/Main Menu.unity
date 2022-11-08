@@ -817,7 +817,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Disabled
+  m_Text: Enabled
 --- !u!222 &61550762
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -1844,6 +1844,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 200045246}
+  index: 3
 --- !u!114 &200045246
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2421,6 +2422,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 448545379}
+  index: 0
 --- !u!114 &448545379
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2962,6 +2964,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 671661383}
+  index: 1
 --- !u!114 &671661383
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5033,6 +5036,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 992818214}
+  index: 0
 --- !u!1 &1002257682
 GameObject:
   m_ObjectHideFlags: 0
@@ -5804,6 +5808,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 1203183919}
+  index: 2
 --- !u!1 &1246571335
 GameObject:
   m_ObjectHideFlags: 0
@@ -7029,6 +7034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 1349067852}
+  index: 3
 --- !u!1 &1365317483
 GameObject:
   m_ObjectHideFlags: 0
@@ -7159,6 +7165,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 1377792125}
+  index: 2
 --- !u!114 &1377792125
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11160,3 +11167,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _toggle: {fileID: 2141870126}
+  index: 1

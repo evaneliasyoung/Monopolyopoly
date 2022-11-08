@@ -11,7 +11,7 @@ public class SpeedSlider : MonoBehaviour
 
     void Start()
     {
-        
+        _slider.value = InitializeGame.GameSpeed;
     }
 
     public void ChangeVolume()

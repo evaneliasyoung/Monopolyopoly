@@ -20,7 +20,7 @@ public class PlayerBankrupt : MonoBehaviour
     {
         parent = this.GetComponent<ActiveTurn>();
         gameController = parent.target.GetComponent<GameControllerSys>();
-        target = gameController.GetPlayer(parent.playerNum).gameObject;
+        target = gameController.GetPlayer(parent.Index).gameObject;
 
         bankruptSprite.gameObject.SetActive(false);
     }
@@ -30,7 +30,7 @@ public class PlayerBankrupt : MonoBehaviour
 		if (lastUpdateTime > updateNSeconds) {
 			lastUpdateTime = 0;
 
-            target = gameController.GetPlayer(parent.playerNum).gameObject;
+            target = gameController.GetPlayer(parent.Index).gameObject;
 
             boolAI = target.GetComponent<PlayerObj>().Bankrupt;
             if(boolAI){

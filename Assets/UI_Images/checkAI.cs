@@ -22,7 +22,7 @@ public class checkAI : MonoBehaviour
 
         parent = this.GetComponent<ActiveTurn>();
         gameController = parent.target.GetComponent<GameControllerSys>();
-        target = gameController.GetPlayer(parent.playerNum).gameObject;
+        target = gameController.GetPlayer(parent.Index).gameObject;
 
     }
     void Update()
@@ -31,7 +31,7 @@ public class checkAI : MonoBehaviour
 		if (lastUpdateTime > updateNSeconds) {
 			lastUpdateTime = 0;
 
-            target = gameController.GetPlayer(parent.playerNum).gameObject;
+            target = gameController.GetPlayer(parent.Index).gameObject;
 
             boolAI = target.GetComponent<PlayerObj>().IsAi;
             if(boolAI){

@@ -58,7 +58,7 @@ public class GameControllerSys : MonoBehaviour
     {
         foreach (PlayerObj player in pieces)
         {
-            if (player.playerNumber == playerNum)
+            if (player.Index == playerNum)
             {
                 return player;
             }
@@ -179,6 +179,7 @@ public class GameControllerSys : MonoBehaviour
                         int owner = (int)tempProp.Owner;
                         currentPlayer.lastPayed = owner;
                         pieces[owner].PlayerMoney += cost;
+                        Debug.Log("cost: " + cost);
                     }
                 }
                 break;
@@ -298,6 +299,17 @@ public class GameControllerSys : MonoBehaviour
     {
         TileSpace test = new TileSpace(tileNum);
         return test.TileType;
+    }
+
+    public int GetPropertyType(byte tileNum)
+    {
+        if (GetTileType(tileNum) != TileType.Property)
+        {
+            return -1;
+        }
+        Property tempProp = bank.GetPropertyByIndex(tileNum);
+        return (int)tempProp.PropertyType;
+
     }
 
     /// <summary>
@@ -522,7 +534,7 @@ public class GameControllerSys : MonoBehaviour
                     if (!player.Bankrupt)
                     {
                         player.PlayerMoney -= 10;
-                        player.lastPayed = currentPlayer.playerNumber;
+                        player.lastPayed = currentPlayer.Index;
                         currentPlayer.PlayerMoney += 10;
                     }
                 }
@@ -558,7 +570,7 @@ public class GameControllerSys : MonoBehaviour
             if (GetTileType(i) == TileType.Property)
             {
                 owner = bank.GetPropertyOwnerByIndex(i);
-                if (owner == currentPlayer.playerNumber)
+                if (owner == currentPlayer.Index)
                 {
                     if (currentPlayer.lastPayed == -1)
                     {
@@ -693,7 +705,7 @@ public class GameControllerSys : MonoBehaviour
         cardScript = cards.GetComponent<CardBehaviour>();
 
         //use objects
-        pieces.Sort((x, y) => x.playerNumber.CompareTo(y.playerNumber));
+        pieces.Sort((x, y) => x.Index.CompareTo(y.Index));
         int uiCount = 0;
         currentPlayer = null;
         for (int i = 0; i < pieces.Count; i++)
@@ -708,7 +720,7 @@ public class GameControllerSys : MonoBehaviour
                 if (currentPlayer == null)
                     currentPlayer = pieces[i];
                 pieces[i].IsAi = false;
-                playerPortraits[uiCount].GetComponent<ActiveTurn>().playerNum = i;
+                playerPortraits[uiCount].GetComponent<ActiveTurn>().Index = i;
                 uiCount++;
             }
             else if (playerState == "ai")
@@ -716,7 +728,7 @@ public class GameControllerSys : MonoBehaviour
                 if (currentPlayer == null)
                     currentPlayer = pieces[i];
                 pieces[i].IsAi = true;
-                playerPortraits[uiCount].GetComponent<ActiveTurn>().playerNum = i;
+                playerPortraits[uiCount].GetComponent<ActiveTurn>().Index = i;
                 uiCount++;
             }
         }
@@ -734,13 +746,13 @@ public class GameControllerSys : MonoBehaviour
         }
         else if (!GameOverCheck())
         {
-            currentPlayerNum = currentPlayer.playerNumber;
+            currentPlayerNum = currentPlayer.Index;
             cameraControl.FocusPlayer();
             cameraControl.TargetPlayer(currentPlayer);
             moveTime = InitializeGame.GameSpeed;
             Debug.Log(moveTime);
             instantMoves = InitializeGame.Quickplay;
-
+            Debug.Log(instantMoves);
             descision.CurrentPlayer = currentPlayer;
             //set buttons
             descision.clearButtons();

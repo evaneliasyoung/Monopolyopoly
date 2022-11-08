@@ -11,7 +11,7 @@ public class InitializeGame
     public static float GameSpeed = 0.2f;
     public static bool Quickplay = false;
 
-    public static float GameVolume = 1.0f;
+    public static float GameVolume = 0.065f;
 
     public static string[] PlayerState = { "none", "none", "none", "none" };
 /*

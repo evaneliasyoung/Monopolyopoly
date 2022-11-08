@@ -360,14 +360,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 632658604}
   transforms: {fileID: 1824611483}
   piece: {fileID: 17768053}
   playerName: Money Bag
   lastPayed: -1
-  playerNumber: 0
+  index: 0
   offset: {x: 0.3, y: 0.07, z: -0.1}
   visitingOffset: {x: 0.06, y: 0.07, z: -0.4}
 --- !u!4 &17768057 stripped
@@ -2200,7 +2199,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 632658603}
   variableName: currentPlayer
-  playerNum: 2
+  Index: 0
 --- !u!114 &106844945
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6265,7 +6264,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 632658603}
   variableName: currentPlayer
-  playerNum: 1
+  Index: 0
 --- !u!114 &313496947
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12537,6 +12536,7 @@ GameObject:
   - component: {fileID: 632658606}
   - component: {fileID: 632658607}
   - component: {fileID: 632658608}
+  - component: {fileID: 632658609}
   m_Layer: 0
   m_Name: GameControl
   m_TagString: Untagged
@@ -12649,6 +12649,26 @@ MonoBehaviour:
   bank: {fileID: 632658606}
   transforms: {fileID: 1824611483}
   housingObject: {fileID: 181069480}
+--- !u!114 &632658609
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 632658603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3d7527b64e6255b44b56b3bc78d8a786, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gameController: {fileID: 632658604}
+  bank: {fileID: 632658606}
+  players:
+  - {fileID: 17768054}
+  - {fileID: 1211599564}
+  - {fileID: 2023055497}
+  - {fileID: 1225926832}
+  housing: {fileID: 632658608}
 --- !u!1 &655055689
 GameObject:
   m_ObjectHideFlags: 0
@@ -17989,7 +18009,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 632658603}
   variableName: currentPlayer
-  playerNum: 0
+  Index: 0
 --- !u!114 &1058002415
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20328,14 +20348,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 632658604}
   transforms: {fileID: 1824611483}
   piece: {fileID: 1211599560}
   playerName: Crowbar
   lastPayed: -1
-  playerNumber: 1
+  index: 1
   offset: {x: 0.1, y: 0.35, z: -0.5}
   visitingOffset: {x: 0, y: 0.35, z: -0.9}
 --- !u!4 &1211599567 stripped
@@ -20494,14 +20513,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 632658604}
   transforms: {fileID: 1824611483}
   piece: {fileID: 1225926828}
   playerName: Bowtie
   lastPayed: -1
-  playerNumber: 3
+  index: 3
   offset: {x: -0.3, y: 0, z: -0.2}
   visitingOffset: {x: -1, y: 0, z: 0.05}
 --- !u!4 &1225926835 stripped
@@ -27917,7 +27935,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 632658603}
   variableName: currentPlayer
-  playerNum: 3
+  Index: 0
 --- !u!114 &1773802775
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -32714,14 +32732,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1800247ac9d875b489478b2e166adbb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Index: 0
   LiquidAssets: 0
   gameController: {fileID: 632658604}
   transforms: {fileID: 1824611483}
   piece: {fileID: 2023055495}
   playerName: Tommy Gun
   lastPayed: -1
-  playerNumber: 2
+  index: 2
   offset: {x: 0, y: 0.13, z: 0.5}
   visitingOffset: {x: -0.15, y: 0.13, z: 0.3}
 --- !u!1001 &2024835698

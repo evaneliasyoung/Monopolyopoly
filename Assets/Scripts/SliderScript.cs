@@ -11,7 +11,8 @@ public class SliderScript : MonoBehaviour
 
     void Start()
     {
-        
+        _slider.value = InitializeGame.GameVolume;
+        _audio.volume = _slider.value;
     }
 
     public void ChangeVolume()

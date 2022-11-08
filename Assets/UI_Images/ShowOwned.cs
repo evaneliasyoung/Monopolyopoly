@@ -47,7 +47,7 @@ public class ShowOwned : MonoBehaviour
     {
         //get activeTurn script from Player1,2,3,4
         parent = this.GetComponentInParent<Transform>().gameObject.GetComponentInParent<ActiveTurn>();
-        player = (byte)parent.playerNum;
+        player = (byte)parent.Index;
         target = parent.target;
 
         image = GetComponent<Image>();
@@ -84,7 +84,7 @@ public class ShowOwned : MonoBehaviour
 			lastUpdateTime = 0;
 
             //if player has changed
-            player = (byte)parent.playerNum;
+            player = (byte)parent.Index;
 
             //owner = target.GetComponent<Bank>().GetPropertyOwnerByIndex(space);
             prop = target.GetComponent<Bank>().GetPropertyByIndex(space);

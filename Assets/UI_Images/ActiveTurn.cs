@@ -6,7 +6,7 @@ public class ActiveTurn : MonoBehaviour
 {
     public GameObject target;
 	public string variableName;
-    public int playerNum;
+    public int Index;
 
 	/** Don't refresh at 60FPS; wasteful! */
 	private float updateNSeconds = 0.25f;
@@ -22,12 +22,12 @@ public class ActiveTurn : MonoBehaviour
 
             playerTurn = target.GetComponent<GameControllerSys>().activeTurn();
 
-            if (playerNum == playerTurn && active == false){
+            if (Index == playerTurn && active == false){
                 transform.position += new Vector3(0, 35, 0);
                 active = true;
             }
 
-            if (playerTurn != playerNum && active == true){
+            if (playerTurn != Index && active == true){
                 transform.position += new Vector3(0, -35, 0);
                 active = false;
             }

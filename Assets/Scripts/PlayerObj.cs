@@ -6,7 +6,7 @@ using UnityEngine;
 /// </summary>
 public class PlayerObj : MonoBehaviour, IPropertyOwner
 {
-    public byte Index;
+    //public byte Index;
     public int LiquidAssets;
 
     public GameControllerSys gameController;
@@ -71,11 +71,15 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
     public float MoveTime { get; set; } = 0.3f;
     public float JumpHeight { get; set; } = 1;
 
-    byte IWithIndex.Index { get { return playerNumber; } }
+    byte IWithIndex.Index { get { return Index; } }
     short ILiquidityProvider.LiquidAssets { get { return PlayerMoney; } set { PlayerMoney = value; } }
 
     //defined in unity
-    public byte playerNumber;
+    public byte Index
+    {
+        get { return index; }
+    }
+    [SerializeField] private byte index;
     public Vector3 offset;
     public Vector3 visitingOffset;
 
@@ -333,7 +337,7 @@ public class PlayerObj : MonoBehaviour, IPropertyOwner
             //stopped moving right after
             if (!moving)
             {
-                SoundManager.Instance.PlayPlayerSound(playerNumber);
+                SoundManager.Instance.PlayPlayerSound(Index);
                 if (jumpCounter && moveSpacesCount == 0)
                 {
                     moveComplete = true;
